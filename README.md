@@ -3,7 +3,4 @@
 
 Miembros del equipo: 
 - MEDINA HERNÁNDEZ, SELENIA MARÍA.
-- BERCIANO RODRÍGUEZ, GEMMA.
-
-
-
+- BERCIANO RODRÍGUEZ, GEMMA. 
