@@ -1,0 +1,20 @@
+
+Tareas:
+Gemma:
+- Una función para obtener los valores del acelerómetro y del magnetómetro de la IMU.
+	Return de la función los valores con un struct o vector o etc.
+- Una función para controlar motores. O una función para mover cada motor.
+	Para el motor paso a paso necesito la posición actual.
+	Entrada de la función por parámetros: posición actual y cuánto hay que mover los drones.
+
+Selenia:
+- Función para calcular la matriz de rotación:
+	Entrada valores del acelerómetro y magnetómetro (return 1ª función Gemma)
+	Return M. rot.
+- Función cálculo posición:
+	Entrada: M. rot y GPS.
+	Return: grados (alfa y beta).
+
+Carlos:
+- Gestión de llamadas a funciones.
+
