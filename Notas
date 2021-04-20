@@ -1,3 +1,19 @@
+Flujo de trabajo:
+
+Modo de calibración:
+0. Calibración IMU
+0.1. Calibración acelerómetro.
+0.2. Calibración magnetómetro.
+
+Modo de funcionamiento:
+1. Homing inclinación de la antena. --> Homing llevar al punto de inicio.
+2. Obtener datos IMU. 
+3. Cálculo M. rot.
+4. Obtención datos GPS.
+5. Cálculo de los ángulos de rotación de los motores.
+6. Orden de mover motores.
+7. Volvemos al 4.
+
 
 Tareas:
 Gemma:
