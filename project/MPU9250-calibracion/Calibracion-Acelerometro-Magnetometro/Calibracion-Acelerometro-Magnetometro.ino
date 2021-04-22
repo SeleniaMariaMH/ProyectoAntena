@@ -73,7 +73,11 @@ void serialEvent(){
     else if(inChar == 'm'){
       estadoApp = 's';  
       Serial.write("     \n --------------  \n Lectura Acelerómetro y Magnetómetro. \n --------------  \n Acc   Acc   Acc   |   Mag   Mag   Mag \n");
+
+      //Leemos datos del acelerómetro
       objAceMag.getAccelerometerReading(&Acc[0], &Acc[1], &Acc[2]);
+
+      //Leemos datos del magnetómetro
       objAceMag.getMagnetometerReading(&Mag[0], &Mag[1], &Mag[2], &measureOk);
 
       Serial.print(Acc[0]);
