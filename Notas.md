@@ -1,11 +1,11 @@
-Flujo de trabajo:
+# Flujo de trabajo:
 
-Modo de calibración:
+## Modo de calibración:
 0. Calibración IMU
 0.1. Calibración acelerómetro.
 0.2. Calibración magnetómetro.
 
-Modo de funcionamiento:
+## Modo de funcionamiento:
 1. Homing inclinación de la antena. --> Homing llevar al punto de inicio.
 2. Obtener datos IMU. 
 3. Cálculo M. rot.
@@ -15,7 +15,7 @@ Modo de funcionamiento:
 7. Volvemos al 4.
 
 
-Tareas:
+### Tareas:
 Gemma:
 - Una función para obtener los valores del acelerómetro y del magnetómetro de la IMU.
 	Return de la función los valores con un struct o vector o etc.
