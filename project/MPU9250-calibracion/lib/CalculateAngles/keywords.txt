@@ -1,4 +1,0 @@
-CalculateAngles	KEYWORD1
-CrossProduct	KEYWORD2
-CalculateNorm	KEYWORD2
-CalculatePhaseAngleAccelerometerMagnetometer	KEYWORD2
