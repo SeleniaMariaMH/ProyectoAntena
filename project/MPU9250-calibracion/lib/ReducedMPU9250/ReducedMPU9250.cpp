@@ -372,6 +372,7 @@ void ReducedMPU9250::CalibrateMagnetometer()
     // Calculate the min and max values
     for(long i=0; i<MAGNETOMETER_CALIBRATION_ITERATIONS; i++)
     {
+        Serial.println(" Calibration ");
         resultOk = false;
         while(!resultOk){
             getMagnetometerReading(&Mag[0], &Mag[1], &Mag[2], &resultOk);

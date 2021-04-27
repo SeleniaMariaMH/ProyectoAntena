@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:nano",
+    "sketch": "project\\MPU9250-calibracion\\Calibracion-Acelerometro-Magnetometro\\Calibracion-Acelerometro-Magnetometro.ino",
+    "port": "COM4",
+    "configuration": "cpu=atmega328old"
+}
