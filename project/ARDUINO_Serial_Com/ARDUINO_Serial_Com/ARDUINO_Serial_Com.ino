@@ -1,5 +1,11 @@
-String inputString = "";     // a String to hold incoming data
-bool stringComplete = false; // whether the string is complete
+
+#include "serial_functions.h"
+
+//EVENT FLAGS
+bool f_serialNewLine = false; // whether the string is complete
+
+//GLOBAL VARIABLES
+String inputString = ""; // a String to hold incoming data
 
 void setup()
 {
@@ -13,12 +19,12 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   // print the string when a newline arrives:
-  if (stringComplete)
+  if (f_serialNewLine)
   {
-    Serial.println(inputString);
+    decodeSerialCommand(&inputString);
     // clear the string:
     inputString = "";
-    stringComplete = false;
+    f_serialNewLine = false;
   }
 }
 
@@ -31,13 +37,15 @@ void serialEvent()
   {
     // get the new byte:
     char inChar = (char)Serial.read();
+
     // add it to the inputString:
     inputString += inChar;
+
     // if the incoming character is a newline, set a flag so the main loop can
     // do something about it:
     if (inChar == '\n')
     {
-      stringComplete = true;
+      f_serialNewLine = true;
     }
   }
 }
