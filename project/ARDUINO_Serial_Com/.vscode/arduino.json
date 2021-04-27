@@ -1,0 +1,6 @@
+{
+    "configuration": "cpu=atmega328old",
+    "board": "arduino:avr:nano",
+    "sketch": "ARDUINO_Serial_Com\\ARDUINO_Serial_Com.ino",
+    "port": "COM8"
+}
