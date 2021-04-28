@@ -1,4 +1,4 @@
-# Rotation matrix -> R = [(A×M)×A, A×M, A];
+# rotation matrix -> R = [(A×M)×A, A×M, A];
 def CalculateRotationMatrix(magnetometerData, accelerometerData):
 
     rX = CrossProduct(CrossProduct(accelerometerData, magnetometerData), accelerometerData)
@@ -15,8 +15,9 @@ def CalculateRotationMatrix(magnetometerData, accelerometerData):
 
     return r
 
-# Calculate cross product for 2 vectors of 3 components
+# calculate cross product for 2 vectors of 3 components
 def CrossProduct(vectorA, vectorB):
+    
     vectorCX = vectorA[1] * vectorB[2] - vectorA[2] * vectorB[1]
     vectorCY = vectorA[2] * vectorB[0] - vectorA[0] * vectorB[2]
     vectorCZ = vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]
@@ -25,8 +26,9 @@ def CrossProduct(vectorA, vectorB):
 
     return vectorC
 
-# Calculate normal of a 3 components vector
+# calculate normal of a 3 components vector
 def CalculateNorm(vector):
+    
     normValue = (vector[0]**2 + vector[1]**2 + vector[2]**2) ** 0.5
 
     return normValue
