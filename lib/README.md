@@ -1,4 +1,6 @@
-## Librerías.
+## Libraries.
+
+- GPSClass: GPS functions.
 
 
 
