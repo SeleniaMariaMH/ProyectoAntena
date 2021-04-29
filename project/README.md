@@ -8,4 +8,5 @@
     -   PositionVector(): to calculate the position vector between two points from theirs latitude, longitude, and height values based on earth's global system
     -   VectorToVector(): to change the reference system of a vector using a rotation matrix
     -    RotationAndInclination(): to calculate the angle of rotation and inclination of a vector
-    
+
+-    ./LOCAL-interface/GetOurPosition.py: function to get our position (latitude & longitude) via GPS.
