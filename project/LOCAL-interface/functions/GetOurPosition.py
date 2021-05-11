@@ -39,6 +39,3 @@ def GetOurPosition(portName, baudRate, timeOut = 3, numMeasure = 10):
     print("Longitude: ", ourLon, "º")
 
     return ourLat, ourLon
-
-
-
