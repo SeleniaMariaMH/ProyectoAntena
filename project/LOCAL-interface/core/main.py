@@ -1,16 +1,29 @@
 from GetOurPosition import GetOurPosition
-from GetOurPosition import DefineGPSPortAndBaudRate
+from GetOurPosition import SelectUSBPortAndBaudRate
 #   main program
 # variables.
 ourLat = 0
 ourLon = 0
 portName = "None"
 baudRate = 0
+status = True
+
+welcomeMessage = "######################## Antenna Project ######################## \n" \
+                 "Team members: \n" \
+                 "  ·   MEDINA HERNÁNDEZ, SELENIA MARÍA. \n" \
+                 "  ·   BERCIANO RODRÍGUEZ, GEMMA. \n" \
+                 "  ·   VEGA GARCÍA, CARLOS. \n" \
+                 "######################## Antenna Project ########################"
+
+# Welcome message.
+print(welcomeMessage)
+
+# Select USB port and baud rate.
+(portName, baudRate) = SelectUSBPortAndBaudRate()
 
 # multiplex to GPS.
 
 # know our position.
-(portName, baudRate) = DefineGPSPortAndBaudRate()
 (ourLat, ourLon) = GetOurPosition(portName, baudRate)
 
 # multiplex to arduino.
