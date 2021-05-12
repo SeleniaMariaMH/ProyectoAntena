@@ -1,6 +1,47 @@
 from time import sleep
+import serial.tools.list_ports
 # GPSclass - lib
 from GPSclass import GPS
+
+def DefineGPSPortAndBaudRate():
+    portsName = serial.tools.list_ports.comports()
+    baudRates = [9600, 14400, 19200, 38400, 57600, 115200]
+
+    print("Available ports: ")
+    for iPortName in range(len(portsName)):
+        print("{", iPortName, "}: ", portsName[iPortName].device)
+    print("Select port name [0 to", (len(portsName) - 1), "]: ")
+
+    status = True
+    while(status):
+        iPortName = input()
+        if (int(iPortName) > (len(portsName) - 1)):
+            print("ERROR! Select a correct value. ")
+            print("Select port name [0 to", (len(portsName) - 1), "]: ")
+            status = True
+        else:
+            status = False
+
+    portName = portsName[int(iPortName)].device
+
+    print("Available baud rates: ")
+    for iBaudRate in range(len(baudRates)):
+        print("{", iBaudRate, "}: ", baudRates[iBaudRate])
+    print("Select baud rate [0 to", (len(baudRates) - 1), "]: ")
+
+    status = True
+    while (status):
+        iBaudRate = input()
+        if (int(iBaudRate) > (len(baudRates) - 1)):
+            print("ERROR! Select a correct value. ")
+            print("Select baud rate [0 to", (len(baudRates) - 1), "]: ")
+            status = True
+        else:
+            status = False
+
+    baudRate = baudRates[int(iBaudRate)]
+
+    return portName, baudRate
 
 # function to get our position via GPS
 # @param:   portName (GPS USB port), baudRate, timeOut (default: 3s), numMeasure (default: 10 measures)

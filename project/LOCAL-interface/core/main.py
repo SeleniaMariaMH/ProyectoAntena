@@ -1,19 +1,17 @@
 from GetOurPosition import GetOurPosition
-
+from GetOurPosition import DefineGPSPortAndBaudRate
 #   main program
+# variables.
+ourLat = 0
+ourLon = 0
+portName = "None"
+baudRate = 0
 
 # multiplex to GPS.
 
 # know our position.
-ourLat = 0
-ourLon = 0
-
-portName = "/dev/tty.wchusbserial1410"
-baudRate = 9600
-timeOut = 5
-numMeasure = 25
-
-(ourLat, ourLon) = GetOurPosition(portName, baudRate, timeOut, numMeasure)
+(portName, baudRate) = DefineGPSPortAndBaudRate()
+(ourLat, ourLon) = GetOurPosition(portName, baudRate)
 
 # multiplex to arduino.
 
