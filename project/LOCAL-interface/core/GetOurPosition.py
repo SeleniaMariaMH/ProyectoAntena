@@ -3,6 +3,9 @@ import serial.tools.list_ports
 # GPSclass - lib
 from GPSclass import GPS
 
+# Variables.
+status = True
+
 def SelectUSBPortAndBaudRate():
     portsName = serial.tools.list_ports.comports()
     baudRates = [9600, 14400, 19200, 38400, 57600, 115200]
