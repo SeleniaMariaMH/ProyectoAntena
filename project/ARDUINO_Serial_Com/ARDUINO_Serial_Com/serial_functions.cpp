@@ -4,10 +4,10 @@
 SerialCommand decodeSerialCommand(String *inputString)
 {
     SerialCommand inCommand;
-    Serial.println(*inputString);
+    //Serial.println(*inputString);
 
     //Read the incoming command
-    inCommand.command=(unsigned int)((*inputString).charAt(0)-65);
+    inCommand.command=(unsigned int)((*inputString).charAt(0));
 
 
     //Divide the paramaters in separates strings
