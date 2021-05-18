@@ -5,6 +5,10 @@ from RotationAndInclinationFunctions import PositionVector
 from RotationAndInclinationFunctions import VectorToVector
 from RotationAndInclinationFunctions import RotationAndInclination
 
+#Import of the communication library
+from AntennaCom import AntennaInterface, NoFeatures
+
+
 #   main program
 # variables.
 ourLat = 0
@@ -22,6 +26,8 @@ baudRate = 0
 magValue = [0, 0, 0]
 accValue = [0, 0, 0]
 rotMatrix = [0, 0, 0]
+
+antenna = AntennaInterface('COM4',9600)
 
 welcomeMessage = "######################## Antenna Project ######################## \n" \
                  "Team members: \n" \
@@ -46,6 +52,20 @@ print(welcomeMessage)
 # get magnetometer and accelerometer calibrated values (magValue, accValue)
 # magValue = [1, 3, 5]
 # accValue = [5, 6, 8]
+
+try:
+    data=antenna.getImuData(2)
+    print("INCOMING DATA:")
+    print(data)
+except NoFeatures:
+    print("ERROR: TIMEOUT")
+
+accValue = data[0:3]
+magValue = data[3:6]
+
+print(accValue)
+print(magValue)
+
 
 # calculate our rotation matrix.
 # rotMatrix = CalculateRotationMatrix(magValue, accValue)
