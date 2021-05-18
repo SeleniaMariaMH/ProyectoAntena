@@ -2,7 +2,7 @@
 from time import sleep
 import serial.tools.list_ports
 # GPSclass - lib
-from GPSclass import GPS
+from functions.GPSclass import GPS
 import math
 
 # to convert from degrees to radians

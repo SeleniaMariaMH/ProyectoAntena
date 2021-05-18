@@ -1,14 +1,13 @@
 # includes
-from Functions import SelectUSBPortAndBaudRate
-from Functions import GetOurPosition
-from Functions import CalculateRotationMatrix
-from Functions import PositionVector
-from Functions import RotationAndInclination
-from Functions import VectorToVector
+from functions.Functions import SelectUSBPortAndBaudRate
+from functions.Functions import GetOurPosition
+from functions.Functions import CalculateRotationMatrix
+from functions.Functions import PositionVector
+from functions.Functions import RotationAndInclination
+from functions.Functions import VectorToVector
 
-#Import of the communication library
-from AntennaCom import AntennaInterface, NoFeatures
-
+# import of the communication library
+from functions.AntennaCom import AntennaInterface, NoFeatures
 
 #   main program
 # variables.
@@ -27,9 +26,6 @@ baudRate = 0
 magValue = [0, 0, 0]
 accValue = [0, 0, 0]
 rotMatrix = [0, 0, 0]
-
-antenna = AntennaInterface('COM4',9600)
-
 welcomeMessage = "######################## Antenna Project ######################## \n" \
                  "Team members: \n" \
                  "  ·   MEDINA HERNÁNDEZ, SELENIA MARÍA. \n" \
@@ -41,32 +37,33 @@ welcomeMessage = "######################## Antenna Project #####################
 print(welcomeMessage)
 
 # Select USB port and baud rate.
-# (portName, baudRate) = SelectUSBPortAndBaudRate()
+(portName, baudRate) = SelectUSBPortAndBaudRate()
+
+# Antenna interface object
+antenna = AntennaInterface(portName, baudRate)
 
 # multiplex to GPS.
 
 # know our position.
-# (ourLat, ourLon) = GetOurPosition(portName, baudRate)
+(ourLat, ourLon) = GetOurPosition(portName, baudRate)
 
 # multiplex to arduino.
 
 # get magnetometer and accelerometer calibrated values (magValue, accValue)
-magValue = [201, 202, 203]
-accValue = [101, 102, 103]
-
 try:
-    data=antenna.getImuData(2)
+    data = antenna.getImuData(2)
     print("INCOMING DATA:")
     print(data)
 except NoFeatures:
     print("ERROR: TIMEOUT")
 
+# format:
+# magValue = [0, 0, 0]
+# accValue = [0, 0, 0]
 accValue = data[0:3]
+print("Accelerometer value: [", accValue[0], ",", accValue[1], ",", accValue[2], "] \n")
 magValue = data[3:6]
-
-print(accValue)
-print(magValue)
-
+print("Magnetometer value: [", magValue[0], ",", magValue[1], ",", magValue[2], "] \n")
 
 # calculate our rotation matrix.
 rotMatrix = CalculateRotationMatrix(magValue, accValue)
@@ -99,5 +96,5 @@ while(True):
 
     # send rotation and inclination angles to arduino (rotDeg, incDeg)
 
-    # get arduino response.
+    # get arduino response
 

@@ -1,5 +1,5 @@
 
-from SerialCom import SerialCommunications 
+from functions.SerialCom import SerialCommunications
 import time
 
 class NoFeatures(Exception):
@@ -61,32 +61,3 @@ class AntennaInterface:
                 return(None)
 
 
-
-
-antenna = AntennaInterface('COM4',9600)
-
-i = 0
-while True:
-    time.sleep((0.1))
-    antenna.readSentence()
-
-    if (i==100):
-
-        try:
-            data=antenna.getImuData(1)
-            print("INCOMING DATA:")
-            print(data)
-        except NoFeatures:
-            print("ERROR: TIMEOUT")
-
-        '''
-        if(antenna.getImuData(1)==None):
-            print("Error Sending the string")
-        else:
-            print("SENT STRING")
-
-            '''
-
-    i=i + 1
-
-serialObj.closePort()
