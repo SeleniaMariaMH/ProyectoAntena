@@ -4,6 +4,7 @@
 #include "TimerInterrupt.h"
 
 #include "serial_functions.h"
+#include "bsp_functions.h"
 
 #if !defined(LED_BUILTIN)
   #define LED_BUILTIN     13
@@ -11,7 +12,8 @@
 
 #define TIMER1_INTERVAL_MS    10000
 
-
+//DEFINITION OF OBJECTS
+ReducedMPU9250 mpu(false);
 
 //EVENT FLAGS
 bool f_serialNewLine = false; // whether the string is complete
@@ -56,7 +58,96 @@ void setup()
   {
     Serial.print(F("Starting  ITimer1 OK, millis() = ")); Serial.println(millis());
   }
+
+  //Inits the MPU
+  if(!init_IMU(&mpu))
+    Serial.println("ERROR: NOT ABLE TO INIT THE IMU");
 }
+
+
+int exeCommand(SerialCommand inCommand){
+
+  int res = 0;
+/*
+  Serial.print(F("Recieved Command "));
+  Serial.print(inCommand.command);
+  Serial.print(F(" with parameters = "));
+  Serial.println(inCommand.nParams);
+  
+  for(short i = 0 ; i < inCommand.nParams; i++){
+    Serial.println(inCommand.params[i]);
+  }
+  */
+
+  int idCommand = inCommand.command;
+ 
+  //Get Acceleration and Magnetometer values
+  if(inCommand.command == 'G'){
+   
+
+    float AccG[] = {0.0, 0.0, 0.0};
+    float MagCal[] = {0.0, 0.0, 0.0};
+    ValoresAccyMag(&mpu,AccG,MagCal);
+
+    return 0;
+
+  }
+  // Calibrate magnetometer
+  else if(inCommand.command == 'C'){
+    
+
+    
+    mpu.CalibrateMagnetometer();
+    Serial.println("CALIBRATING MAGNETOMETER");
+    return 0;
+  }
+
+  // Introduce offset to the acelerometer
+  else if(inCommand.command == 'U'){
+    if(inCommand.nParams != 3){
+      return -2;
+    }
+    int mode = inCommand.params[0].toInt();
+    int offset = inCommand.params[1].toInt();
+    int axis = inCommand.params[1].toInt();
+    if(mode == 0){
+      updateAccelerometerCalibrationScale(&mpu,offset,axis);
+      Serial.println("Update scale");
+    }else if(mode == 1){      
+      updateAccelerometerCalibrationOffsets(&mpu,offset,axis);
+      Serial.println("Update offset");
+    }else{
+      return -2;
+    }
+    return 0;
+  }
+  else{
+    return -1;
+  }
+
+  /* switch(idCommand){
+    //GETS THE DATA FROM THE IMU
+    case 0:
+      float AccG[] = {0.0, 0.0, 0.0};
+      float MagCal[] = {0.0, 0.0, 0.0};
+      ValoresAccyMag(&mpu,AccG,MagCal);
+      break;
+
+    //CALIBRATE THE MAGNETOMETER
+    case 1:
+      Serial.println("CALIBRATING MAGNETOMETER");
+      mpu.CalibrateMagnetometer();
+      break;
+
+    default:
+      res = -1;
+      break;
+      
+  } */
+  return res;
+}
+
+
 
 void loop()
 {
@@ -66,13 +157,12 @@ void loop()
   {
     SerialCommand inCommand = decodeSerialCommand(&inputString);
 
-    Serial.print(F("Recieved Command "));
-    Serial.print(inCommand.command);
-    Serial.print(F(" with parameters = "));
-    Serial.println(inCommand.nParams);
-    for(short i = 0 ; i < inCommand.nParams; i++){
-      Serial.println(inCommand.params[i]);
+    if(exeCommand(inCommand) <0){
+      Serial.println("E:0");
+      Serial.println("ERROR, Unknown command");
     }
+
+    //Serial.println("Command Executed");
 
     // clear the string:
     inputString = "";
