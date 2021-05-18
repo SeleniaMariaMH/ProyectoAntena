@@ -1,13 +1,11 @@
-# includes
-from functions.Functions import SelectUSBPortAndBaudRate
-from functions.Functions import GetOurPosition
-from functions.Functions import CalculateRotationMatrix
-from functions.Functions import PositionVector
-from functions.Functions import RotationAndInclination
-from functions.Functions import VectorToVector
+# imports
+from functions.Functions import *
 
 # import of the communication library
-from functions.AntennaCom import AntennaInterface, NoFeatures
+from functions.AntennaCom import *
+
+# import DRON position simulation
+from functions.DronPositionSimulationClass import *
 
 #   main program
 # variables.
@@ -32,6 +30,13 @@ welcomeMessage = "######################## Antenna Project #####################
                  "  ·   BERCIANO RODRÍGUEZ, GEMMA. \n" \
                  "  ·   VEGA GARCÍA, CARLOS. \n" \
                  "######################## Antenna Project ######################## \n"
+
+# dron positions list
+positionList = []
+positionList.append({'Latitude': 1.1, 'Longitude': 1.2, 'Altitude': 1.3})
+positionList.append({'Latitude': 2.1, 'Longitude': 2.2, 'Altitude': 2.3})
+positionList.append({'Latitude': 3.1, 'Longitude': 3.2, 'Altitude': 3.3})
+positionList.append({'Latitude': 4.1, 'Longitude': 4.2, 'Altitude': 4.3})
 
 # Welcome message.
 print(welcomeMessage)
@@ -68,20 +73,15 @@ print("Magnetometer value: [", magValue[0], ",", magValue[1], ",", magValue[2], 
 # calculate our rotation matrix.
 rotMatrix = CalculateRotationMatrix(magValue, accValue)
 
+# start position object
+positionObject = PositionSimulation(positionList)
+positionObject.start()
+
 while(True):
 
-    # know dron position.
-    print("Introduce DRON position: ")
-    print("Latitude (degrees): ")
-    dronLat = input()
-
-    print("Longitude (degrees): ")
-    dronLon = input()
-
-    print("Height (meters): ")
-    dronHei = input()
-
-    print("DRON position introduced: (", dronLat, "º,", dronLon, "º,", dronHei, "m)")
+    # DRON position
+    (dronLat, dronLon, dronHei) = positionObject.getPosition()
+    print("Current DRON position: (", dronLat, "º,", dronLon, "º,", dronHei, "m)")
 
     # calculate vector position.
     posVector = PositionVector(ourLat, ourLon, ourHei, dronLat, dronLon, dronHei)
@@ -98,3 +98,5 @@ while(True):
 
     # get arduino response
 
+# stop position object
+# positionObject.stop()
