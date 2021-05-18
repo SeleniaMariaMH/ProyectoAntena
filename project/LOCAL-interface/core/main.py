@@ -1,9 +1,10 @@
-from GetOurPosition import GetOurPosition
-from GetOurPosition import SelectUSBPortAndBaudRate
-from RotationMatrixFunction import CalculateRotationMatrix
-from RotationAndInclinationFunctions import PositionVector
-from RotationAndInclinationFunctions import VectorToVector
-from RotationAndInclinationFunctions import RotationAndInclination
+# includes
+from Functions import SelectUSBPortAndBaudRate
+from Functions import GetOurPosition
+from Functions import CalculateRotationMatrix
+from Functions import PositionVector
+from Functions import RotationAndInclination
+from Functions import VectorToVector
 
 #   main program
 # variables.
@@ -28,7 +29,7 @@ welcomeMessage = "######################## Antenna Project #####################
                  "  ·   MEDINA HERNÁNDEZ, SELENIA MARÍA. \n" \
                  "  ·   BERCIANO RODRÍGUEZ, GEMMA. \n" \
                  "  ·   VEGA GARCÍA, CARLOS. \n" \
-                 "######################## Antenna Project ########################"
+                 "######################## Antenna Project ######################## \n"
 
 # Welcome message.
 print(welcomeMessage)
@@ -44,11 +45,11 @@ print(welcomeMessage)
 # multiplex to arduino.
 
 # get magnetometer and accelerometer calibrated values (magValue, accValue)
-# magValue = [1, 3, 5]
-# accValue = [5, 6, 8]
+magValue = [201, 202, 203]
+accValue = [101, 102, 103]
 
 # calculate our rotation matrix.
-# rotMatrix = CalculateRotationMatrix(magValue, accValue)
+rotMatrix = CalculateRotationMatrix(magValue, accValue)
 
 while(True):
 
@@ -66,13 +67,15 @@ while(True):
     print("DRON position introduced: (", dronLat, "º,", dronLon, "º,", dronHei, "m)")
 
     # calculate vector position.
-    # posVector = PositionVector(ourLat, ourLon, ourHei, dronLat, dronLon, dronHei)
+    posVector = PositionVector(ourLat, ourLon, ourHei, dronLat, dronLon, dronHei)
 
     # change vector position reference.
-    # posVectorRef = VectorToVector(posVector, rotMatrix)
+    posVectorRef = VectorToVector(posVector, rotMatrix)
+    print("Position vector: [", posVectorRef[0], ",", posVectorRef[1], ",", posVectorRef[2], "]")
 
     # calculate rotation and inclination angles.
-    # (rotDeg, incDeg) = RotationAndInclination(posVectorRef)
+    (rotDeg, incDeg) = RotationAndInclination(posVectorRef)
+    print("Rotation angle: ", rotDeg, "º \n Inclination angle: ", incDeg, "º \n")
 
     # send rotation and inclination angles to arduino (rotDeg, incDeg)
 
