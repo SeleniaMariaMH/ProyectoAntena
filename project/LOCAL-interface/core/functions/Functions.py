@@ -104,7 +104,7 @@ def SelectUSBPortAndBaudRate():
 # function to get our position via GPS
 # @param:   portName (GPS USB port), baudRate, timeOut (default: 3s), numMeasure (default: 10 measures)
 # @return:  latitude (degrees) and longitude (degrees)
-def GetOurPosition(portName, baudRate, timeOut = 3, numMeasure = 10):
+def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10):
 
     gps = GPS(portName, baudRate, timeOut)
     gps.connect()
@@ -173,3 +173,18 @@ def CalculateNorm(vector):
     normValue = (vector[0]**2 + vector[1]**2 + vector[2]**2) ** 0.5
 
     return normValue
+
+def createDronPositionList(list, ourLat, ourLon):
+    # DRON moves from 5m to 1m of altitude (inclination)
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 5})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 4})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 3})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 2})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 1})
+
+    # DRON moves to the left (rotation)
+    list.append({'Latitude': ourLat + 0.00018, 'Longitude': ourLon + 0.00022, 'Altitude': 1})
+    list.append({'Latitude': ourLat + 0.00016, 'Longitude': ourLon + 0.00024, 'Altitude': 1})
+    list.append({'Latitude': ourLat + 0.00014, 'Longitude': ourLon + 0.00026, 'Altitude': 1})
+    list.append({'Latitude': ourLat + 0.00012, 'Longitude': ourLon + 0.00028, 'Altitude': 1})
+    list.append({'Latitude': ourLat + 0.00010, 'Longitude': ourLon + 0.00030, 'Altitude': 1})
