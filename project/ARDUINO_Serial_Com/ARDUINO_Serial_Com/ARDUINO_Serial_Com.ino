@@ -1,16 +1,19 @@
 
 #define USE_TIMER_1     true
 
-#include "TimerInterrupt.h"
+//#include "TimerInterrupt.h"
 
 #include "serial_functions.h"
 #include "bsp_functions.h"
 
-#if !defined(LED_BUILTIN)
-  #define LED_BUILTIN     13
-#endif
+#include <Servo.h>
+#include <Stepper.h>
+
+
+#define SERVO_PIN 9
 
 #define TIMER1_INTERVAL_MS    10000
+#define WAIT_TIME_SERVO 1500
 
 //DEFINITION OF OBJECTS
 ReducedMPU9250 mpu(false);
@@ -21,6 +24,11 @@ bool f_serialNewLine = false; // whether the string is complete
 //GLOBAL VARIABLES
 String inputString = ""; // a String to hold incoming data
 unsigned int outputPin1 = LED_BUILTIN;
+Servo miServo;    // Creo objeto de la clase Servo.
+const int dirPin = 8;
+const int stepPin = 9;
+const int enable = 7;
+float PosIni = 0;
 
 //Function for analysing the system periodically and sending information the host
 void TimerHandler1(unsigned int outputPin = LED_BUILTIN)
@@ -47,28 +55,39 @@ void setup()
   // reserve 200 bytes for the inputString:
   inputString.reserve(200);
 
+/*
   Serial.print(F("\nStarting Antenna Development Platform "));
   Serial.println(BOARD_TYPE);
   Serial.print(F("CPU Frequency = ")); Serial.print(F_CPU / 1000000); Serial.println(F(" MHz"));
 
-  
+ 
   ITimer1.init();
 
   if (ITimer1.attachInterruptInterval(TIMER1_INTERVAL_MS, TimerHandler1, outputPin1))
   {
     Serial.print(F("Starting  ITimer1 OK, millis() = ")); Serial.println(millis());
   }
+  */
 
   //Inits the MPU
   if(!init_IMU(&mpu))
     Serial.println("ERROR: NOT ABLE TO INIT THE IMU");
+
+  //Inits the servo
+  miServo.attach(SERVO_PIN); 
+
+  // Inits the stepper pins
+  pinMode(dirPin, OUTPUT);
+  pinMode(stepPin, OUTPUT);
+  pinMode(enable, OUTPUT);
 }
 
 
 int exeCommand(SerialCommand inCommand){
 
   int res = 0;
-/*
+
+  #ifdef DEBUG
   Serial.print(F("Recieved Command "));
   Serial.print(inCommand.command);
   Serial.print(F(" with parameters = "));
@@ -77,7 +96,7 @@ int exeCommand(SerialCommand inCommand){
   for(short i = 0 ; i < inCommand.nParams; i++){
     Serial.println(inCommand.params[i]);
   }
-  */
+  #endif
 
   int idCommand = inCommand.command;
  
@@ -94,11 +113,8 @@ int exeCommand(SerialCommand inCommand){
   }
   // Calibrate magnetometer
   else if(inCommand.command == 'C'){
-    
-
-    
     mpu.CalibrateMagnetometer();
-    Serial.println("CALIBRATING MAGNETOMETER");
+    Serial.println("C:OK");
     return 0;
   }
 
@@ -121,29 +137,40 @@ int exeCommand(SerialCommand inCommand){
     }
     return 0;
   }
+
+  // Moving the servo to an specified position
+  else if(inCommand.command == 'S'){
+    if(inCommand.nParams != 1){
+      return -2;
+    }
+    float pos = inCommand.params[0].toFloat();
+
+    MovServoMotor(&miServo, pos,WAIT_TIME_SERVO);
+    
+    //Returns the the servo has arrived
+    Serial.println("S:OK"); 
+    return 0;
+  }
+
+  // Moving the stepper to an specified position
+  else if(inCommand.command == 'M'){
+    if(inCommand.nParams != 1){
+      return -2;
+    }
+    float pos = inCommand.params[0].toFloat();
+
+    MovStepperMotor(dirPin, stepPin, enable, 10, &PosIni);
+    
+    //Returns the the servo has arrived
+    Serial.println("M:OK"); 
+    return 0;
+  }
+
   else{
     return -1;
   }
 
-  /* switch(idCommand){
-    //GETS THE DATA FROM THE IMU
-    case 0:
-      float AccG[] = {0.0, 0.0, 0.0};
-      float MagCal[] = {0.0, 0.0, 0.0};
-      ValoresAccyMag(&mpu,AccG,MagCal);
-      break;
-
-    //CALIBRATE THE MAGNETOMETER
-    case 1:
-      Serial.println("CALIBRATING MAGNETOMETER");
-      mpu.CalibrateMagnetometer();
-      break;
-
-    default:
-      res = -1;
-      break;
-      
-  } */
+  
   return res;
 }
 

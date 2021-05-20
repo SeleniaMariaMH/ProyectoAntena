@@ -50,13 +50,13 @@ antenna = AntennaInterface(portName, baudRate)
 # multiplex to GPS.
 
 # know our position.
-(ourLat, ourLon) = GetOurPosition(portName, baudRate)
-
+#(ourLat, ourLon) = GetOurPosition(portName, baudRate)
+(ourLat, ourLon) = (28.0702312,-15.4549816)
 # multiplex to arduino.
 
 # get magnetometer and accelerometer calibrated values (magValue, accValue)
 try:
-    data = antenna.getImuData(2)
+    data = antenna.getImuData(10)
     print("INCOMING DATA:")
     print(data)
 except NoFeatures:
@@ -95,6 +95,15 @@ while(True):
     print("Rotation angle: ", rotDeg, "º \n Inclination angle: ", incDeg, "º \n")
 
     # send rotation and inclination angles to arduino (rotDeg, incDeg)
+    try:
+        antenna.moveServo(incDeg,2)
+    except NoFeatures:
+        print("ERROR: TIMEOUT")
+
+    try:
+        antenna.moveStepper(rotDeg,2)
+    except NoFeatures:
+        print("ERROR: TIMEOUT")
 
     # get arduino response
 

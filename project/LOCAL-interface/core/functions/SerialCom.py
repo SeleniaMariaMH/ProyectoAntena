@@ -4,12 +4,13 @@ import threading
 
 class SerialCommunications:
 
-    read = False
     incData = ""
 
     def __init__(self,port,baudrate):
-        self.serialPort = serial.Serial(port, baudrate)
-        self.read = True
+        try:
+            self.serialPort = serial.Serial(port, baudrate)
+        except:
+            print("ERROR PORT")
 
     def writeSerial(self,sentence):
         self.serialPort.write(sentence)

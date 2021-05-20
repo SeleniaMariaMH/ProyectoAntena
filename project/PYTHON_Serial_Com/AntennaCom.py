@@ -43,6 +43,26 @@ class AntennaInterface:
 
 
 
+    def calibrateImu(self,timeout):
+        self.serial.writeSerial(b'C:0\n')
+        
+        expireTime = time.monotonic() + timeout
+
+        while True:
+            inString = self.serial.readSerial()
+            if(inString != None):
+                decodeCom= self.decodeCommand(inString)
+
+                #Check if the incoming sentence is the one that we are waiting.
+                if(decodeCom["id"]=='C'):
+                    print(inString)
+                    print(decodeCom)
+                    return()
+
+            if(time.monotonic() >= expireTime):
+                raise NoFeatures("timeout")
+                return(None)
+
 
     def getImuData(self,timeout):
         self.serial.writeSerial(b'G:0\n')
@@ -53,12 +73,57 @@ class AntennaInterface:
             inString = self.serial.readSerial()
             if(inString != None):
                 decodeCom= self.decodeCommand(inString)
-                print(inString)
-                print(decodeCom)
-                return(decodeCom["params"])
+                #Check if the incoming sentence is the one that we are waiting.
+                if(decodeCom["id"]=='G'):
+                    print(inString)
+                    print(decodeCom)
+                    return(decodeCom["params"])
+                                    
             if(time.monotonic() >= expireTime):
                 raise NoFeatures("timeout")
                 return(None)
+
+    def moveServo(self,position,timeout):
+        string = 'S:'+str(position)+'\n'
+        self.serial.writeSerial(str.encode(string))
+        
+        expireTime = time.monotonic() + timeout
+
+        while True:
+            inString = self.serial.readSerial()
+            if(inString != None):
+                decodeCom= self.decodeCommand(inString)
+                #Check if the incoming sentence is the one that we are waiting.
+                if(decodeCom["id"]=='S'):
+                    print(inString)
+                    print(decodeCom)
+                    return(decodeCom["params"])
+                                    
+            if(time.monotonic() >= expireTime):
+                raise NoFeatures("timeout")
+                return(None)
+
+
+    def moveStepper(self,position,timeout):
+        string = 'M:'+str(position)+'\n'
+        self.serial.writeSerial(str.encode(string))
+        
+        expireTime = time.monotonic() + timeout
+
+        while True:
+            inString = self.serial.readSerial()
+            if(inString != None):
+                decodeCom= self.decodeCommand(inString)
+                #Check if the incoming sentence is the one that we are waiting.
+                if(decodeCom["id"]=='M'):
+                    print(inString)
+                    print(decodeCom)
+                    return(decodeCom["params"])
+                                    
+            if(time.monotonic() >= expireTime):
+                raise NoFeatures("timeout")
+                return(None)
+
 
 
 
@@ -73,7 +138,7 @@ while True:
     if (i==100):
 
         try:
-            data=antenna.getImuData(1)
+            data=antenna.moveServo(10,100)
             print("INCOMING DATA:")
             print(data)
         except NoFeatures:
