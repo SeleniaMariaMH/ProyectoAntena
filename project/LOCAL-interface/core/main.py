@@ -67,13 +67,13 @@ print("Magnetometer value: [", magValue[0], ",", magValue[1], ",", magValue[2], 
 # calculate our rotation matrix.
 rotMatrix = CalculateRotationMatrix(magValue, accValue)
 
-# position object
+# position object: DRON
 dron = PositionSimulation(dronPosList)
 
-while(True):
+# start DRON
+dron.start()
 
-    # start DRON position
-    dron.start()
+while(True):
 
     # DRON position
     (dronLat, dronLon, dronHei) = dron.getPosition()
