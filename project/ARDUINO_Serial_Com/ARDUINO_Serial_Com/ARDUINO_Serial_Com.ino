@@ -6,6 +6,7 @@
 #include "serial_functions.h"
 #include "bsp_functions.h"
 
+#include <ReducedMPU9250.h>
 #include <Servo.h>
 #include <Stepper.h>
 
@@ -28,8 +29,9 @@ const int dirPin = 8;
 const int stepPin = 9;
 const int enable = 7;
 float PosIni = 0;
-const int selector = 6; // A activo a nivel bajo, B a nivel alto
-const int enable = 5;   // G activo a nivel bajo (enable)
+
+const int muxSelector = 6; // A activo a nivel bajo, B a nivel alto
+const int muxEnable = 5;   // G activo a nivel bajo (enable)
 
 //Function for analysing the system periodically and sending information the host
 void TimerHandler1(unsigned int outputPin = LED_BUILTIN)
@@ -83,10 +85,10 @@ void setup()
   pinMode(enable, OUTPUT);
 
   // Init the multiplexer  pins
-  pinMode(selector, OUTPUT);
-  pinMode(enable, OUTPUT);
-  digitalWrite(enable, LOW);   // Enable activo.
-  digitalWrite(selector, LOW); // Habilitamos comunicaciones con A (Arduino)
+  pinMode(muxSelector, OUTPUT);
+  pinMode(muxEnable, OUTPUT);
+  digitalWrite(muxEnable, LOW);   // Enable activo.
+  digitalWrite(muxSelector, LOW); // Habilitamos comunicaciones con A (Arduino)
 }
 
 int exeCommand(SerialCommand inCommand)
@@ -194,7 +196,7 @@ int exeCommand(SerialCommand inCommand)
     }
     float switchTime = inCommand.params[0].toFloat();
 
-    void switchUSART(const int selector, const int enable, int switchTime);
+    switchUSART(muxSelector, muxEnable, switchTime);
 
     //Returns the the servo has arrived
     Serial.println("G:OK");

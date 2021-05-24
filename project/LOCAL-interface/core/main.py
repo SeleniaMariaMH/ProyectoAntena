@@ -45,7 +45,8 @@ antenna = AntennaInterface(portName, baudRate)
 # multiplex to GPS.
 
 # know our position.
-(ourLat, ourLon) = GetOurPosition(portName, baudRate)
+#(ourLat, ourLon) = GetOurPosition(portName, baudRate)
+(ourLat, ourLon) = (28.07147116814593, -15.453824236756027)
 
 # create DRON positions list
 createDronPositionList(dronPosList, ourLat, ourLon)
@@ -92,8 +93,17 @@ while(True):
     print("  -   Rotation angle: ", rotDeg, "º \n  -   Inclination angle: ", incDeg, "º \n")
 
     # send rotation and inclination angles to arduino (rotDeg, incDeg)
+    try:
+        data=antenna.moveServo(incDeg,5)
+    except NoFeatures:
+        print("ERROR: TIMEOUT SERVO COM")
+    
+    try:
+        data=antenna.moveStepper(rotDeg,5)
+    except NoFeatures:
+        print("ERROR: TIMEOUT STEPPER COM")
 
-    # get arduino response
+    # get arduino response (NOT  NEEDED)
 
     # loop delay
     time.sleep(2)

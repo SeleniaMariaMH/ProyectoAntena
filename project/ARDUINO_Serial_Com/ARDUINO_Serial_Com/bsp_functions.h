@@ -24,5 +24,5 @@ void updateAccelerometerCalibrationOffsets(ReducedMPU9250 *accelMag, int axisInd
 void updateAccelerometerCalibrationScale(ReducedMPU9250 *accelMag, int axisIndex, int increment);
 void MovServoMotor(Servo *miServo, float posFinal, int tiempoEspera);
 void MovStepperMotor(const int dirPin, const int stepPin, const int enable, float PosFinal, float *PosIni);
-void switchUSART(const int selector, const int enable, int tiempo)
+void switchUSART(const int selector, const int enable, int tiempo);
 #endif
