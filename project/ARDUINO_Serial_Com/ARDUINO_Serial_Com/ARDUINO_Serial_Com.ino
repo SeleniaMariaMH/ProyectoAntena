@@ -1,5 +1,5 @@
 
-#define USE_TIMER_1     true
+#define USE_TIMER_1 true
 
 //#include "TimerInterrupt.h"
 
@@ -9,10 +9,9 @@
 #include <Servo.h>
 #include <Stepper.h>
 
-
 #define SERVO_PIN 9
 
-#define TIMER1_INTERVAL_MS    10000
+#define TIMER1_INTERVAL_MS 10000
 #define WAIT_TIME_SERVO 1500
 
 //DEFINITION OF OBJECTS
@@ -24,11 +23,13 @@ bool f_serialNewLine = false; // whether the string is complete
 //GLOBAL VARIABLES
 String inputString = ""; // a String to hold incoming data
 unsigned int outputPin1 = LED_BUILTIN;
-Servo miServo;    // Creo objeto de la clase Servo.
+Servo miServo; // Creo objeto de la clase Servo.
 const int dirPin = 8;
 const int stepPin = 9;
 const int enable = 7;
 float PosIni = 0;
+const int selector = 6; // A activo a nivel bajo, B a nivel alto
+const int enable = 5;   // G activo a nivel bajo (enable)
 
 //Function for analysing the system periodically and sending information the host
 void TimerHandler1(unsigned int outputPin = LED_BUILTIN)
@@ -55,7 +56,7 @@ void setup()
   // reserve 200 bytes for the inputString:
   inputString.reserve(200);
 
-/*
+  /*
   Serial.print(F("\nStarting Antenna Development Platform "));
   Serial.println(BOARD_TYPE);
   Serial.print(F("CPU Frequency = ")); Serial.print(F_CPU / 1000000); Serial.println(F(" MHz"));
@@ -70,111 +71,143 @@ void setup()
   */
 
   //Inits the MPU
-  if(!init_IMU(&mpu))
+  if (!init_IMU(&mpu))
     Serial.println("ERROR: NOT ABLE TO INIT THE IMU");
 
   //Inits the servo
-  miServo.attach(SERVO_PIN); 
+  miServo.attach(SERVO_PIN);
 
   // Inits the stepper pins
   pinMode(dirPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
   pinMode(enable, OUTPUT);
+
+  // Init the multiplexer  pins
+  pinMode(selector, OUTPUT);
+  pinMode(enable, OUTPUT);
+  digitalWrite(enable, LOW);   // Enable activo.
+  digitalWrite(selector, LOW); // Habilitamos comunicaciones con A (Arduino)
 }
 
-
-int exeCommand(SerialCommand inCommand){
+int exeCommand(SerialCommand inCommand)
+{
 
   int res = 0;
 
-  #ifdef DEBUG
+#ifdef DEBUG
   Serial.print(F("Recieved Command "));
   Serial.print(inCommand.command);
   Serial.print(F(" with parameters = "));
   Serial.println(inCommand.nParams);
-  
-  for(short i = 0 ; i < inCommand.nParams; i++){
+
+  for (short i = 0; i < inCommand.nParams; i++)
+  {
     Serial.println(inCommand.params[i]);
   }
-  #endif
+#endif
 
   int idCommand = inCommand.command;
- 
+
   //Get Acceleration and Magnetometer values
-  if(inCommand.command == 'G'){
-   
+  if (inCommand.command == 'G')
+  {
 
     float AccG[] = {0.0, 0.0, 0.0};
     float MagCal[] = {0.0, 0.0, 0.0};
-    ValoresAccyMag(&mpu,AccG,MagCal);
+    ValoresAccyMag(&mpu, AccG, MagCal);
 
     return 0;
-
   }
   // Calibrate magnetometer
-  else if(inCommand.command == 'C'){
+  else if (inCommand.command == 'C')
+  {
     mpu.CalibrateMagnetometer();
     Serial.println("C:OK");
     return 0;
   }
 
   // Introduce offset to the acelerometer
-  else if(inCommand.command == 'U'){
-    if(inCommand.nParams != 3){
+  else if (inCommand.command == 'U')
+  {
+    if (inCommand.nParams != 3)
+    {
       return -2;
     }
     int mode = inCommand.params[0].toInt();
     int offset = inCommand.params[1].toInt();
     int axis = inCommand.params[1].toInt();
-    if(mode == 0){
-      updateAccelerometerCalibrationScale(&mpu,offset,axis);
+    if (mode == 0)
+    {
+      updateAccelerometerCalibrationScale(&mpu, offset, axis);
       Serial.println("Update scale");
-    }else if(mode == 1){      
-      updateAccelerometerCalibrationOffsets(&mpu,offset,axis);
+    }
+    else if (mode == 1)
+    {
+      updateAccelerometerCalibrationOffsets(&mpu, offset, axis);
       Serial.println("Update offset");
-    }else{
+    }
+    else
+    {
       return -2;
     }
     return 0;
   }
 
   // Moving the servo to an specified position
-  else if(inCommand.command == 'S'){
-    if(inCommand.nParams != 1){
+  else if (inCommand.command == 'S')
+  {
+    if (inCommand.nParams != 1)
+    {
       return -2;
     }
     float pos = inCommand.params[0].toFloat();
 
-    MovServoMotor(&miServo, pos,WAIT_TIME_SERVO);
-    
+    MovServoMotor(&miServo, pos, WAIT_TIME_SERVO);
+
     //Returns the the servo has arrived
-    Serial.println("S:OK"); 
+    Serial.println("S:OK");
     return 0;
   }
 
   // Moving the stepper to an specified position
-  else if(inCommand.command == 'M'){
-    if(inCommand.nParams != 1){
+  else if (inCommand.command == 'M')
+  {
+    if (inCommand.nParams != 1)
+    {
       return -2;
     }
     float pos = inCommand.params[0].toFloat();
 
     MovStepperMotor(dirPin, stepPin, enable, 10, &PosIni);
-    
+
     //Returns the the servo has arrived
-    Serial.println("M:OK"); 
+    Serial.println("M:OK");
     return 0;
   }
 
-  else{
+  // Switching the MUX for communicating with the GPS
+  else if (inCommand.command == 'G')
+  {
+    if (inCommand.nParams != 1)
+    {
+      return -2;
+    }
+    float switchTime = inCommand.params[0].toFloat();
+
+    void switchUSART(const int selector, const int enable, int switchTime);
+
+    //Returns the the servo has arrived
+    Serial.println("G:OK");
+    return 0;
+  }
+
+  else
+  {
     return -1;
   }
 
-  
   return res;
 }
-
-
 
 void loop()
 {
@@ -184,7 +217,8 @@ void loop()
   {
     SerialCommand inCommand = decodeSerialCommand(&inputString);
 
-    if(exeCommand(inCommand) <0){
+    if (exeCommand(inCommand) < 0)
+    {
       Serial.println("E:0");
       Serial.println("ERROR, Unknown command");
     }
@@ -217,11 +251,4 @@ void serialEvent()
       f_serialNewLine = true;
     }
   }
-}
-
-
-
-int heartBeatSerial()
-{
-
 }
