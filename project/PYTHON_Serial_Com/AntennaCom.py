@@ -32,18 +32,17 @@ class AntennaInterface:
 
         for i in range(2,len(string)):
             if(string[i]== sep):
-                #string[lastSep:i].append(decodeCom["par"])
                 decodeCom["params"].append(string[lastSep:i])
                 lastSep = i
             if(i == (len(string)-1)):
-                #string[lastSep:i].append(decodeCom["par"])
-                decodeCom["params"].append(string[lastSep:i])
+                decodeCom["params"].append(string[lastSep:i+1])
 
         return(decodeCom)
 
 
 
     def calibrateImu(self,timeout):
+        self.serial.open()
         self.serial.writeSerial(b'C:0\n')
         
         expireTime = time.monotonic() + timeout
@@ -57,14 +56,20 @@ class AntennaInterface:
                 if(decodeCom["id"]=='C'):
                     print(inString)
                     print(decodeCom)
+                    self.serial.close()
+
                     return()
 
             if(time.monotonic() >= expireTime):
                 raise NoFeatures("timeout")
-                return(None)
+                self.serial.close()
 
+                return(None)
+        
+        
 
     def getImuData(self,timeout):
+        self.serial.open()
         self.serial.writeSerial(b'G:0\n')
         
         expireTime = time.monotonic() + timeout
@@ -77,13 +82,18 @@ class AntennaInterface:
                 if(decodeCom["id"]=='G'):
                     print(inString)
                     print(decodeCom)
+                    self.serial.close()
+
                     return(decodeCom["params"])
                                     
             if(time.monotonic() >= expireTime):
+                self.serial.close()
+
                 raise NoFeatures("timeout")
                 return(None)
 
     def moveServo(self,position,timeout):
+        self.serial.open()
         string = 'S:'+str(position)+'\n'
         self.serial.writeSerial(str.encode(string))
         
@@ -97,14 +107,19 @@ class AntennaInterface:
                 if(decodeCom["id"]=='S'):
                     print(inString)
                     print(decodeCom)
+                    self.serial.close()
+
                     return(decodeCom["params"])
                                     
             if(time.monotonic() >= expireTime):
+                self.serial.close()
+
                 raise NoFeatures("timeout")
                 return(None)
 
 
     def moveStepper(self,position,timeout):
+        self.serial.open()
         string = 'M:'+str(position)+'\n'
         self.serial.writeSerial(str.encode(string))
         
@@ -118,9 +133,38 @@ class AntennaInterface:
                 if(decodeCom["id"]=='M'):
                     print(inString)
                     print(decodeCom)
+                    self.serial.close()
+
                     return(decodeCom["params"])
                                     
             if(time.monotonic() >= expireTime):
+                self.serial.close()
+
+                raise NoFeatures("timeout")
+                return(None)
+
+    def swithGPS(self,timeVal,timeout):
+        self.serial.open()
+        string = 'A:'+str(timeVal)+'\n'
+        self.serial.writeSerial(str.encode(string))
+
+        expireTime = time.monotonic() + timeout
+
+        while True:
+            inString = self.serial.readSerial()
+            if(inString != None):
+                decodeCom= self.decodeCommand(inString)
+                #Check if the incoming sentence is the one that we are waiting.
+                if(decodeCom["id"]=='A'):
+                    print(inString)
+                    print(decodeCom)
+                    self.serial.close()
+
+                    return(decodeCom["params"])
+                                    
+            if(time.monotonic() >= expireTime):
+                self.serial.close()
+
                 raise NoFeatures("timeout")
                 return(None)
 
@@ -138,7 +182,7 @@ while True:
     if (i==100):
 
         try:
-            data=antenna.moveServo(10,100)
+            data=antenna.swithGPS(100,100)
             print("INCOMING DATA:")
             print(data)
         except NoFeatures:

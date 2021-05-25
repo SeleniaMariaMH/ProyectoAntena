@@ -32,12 +32,10 @@ class AntennaInterface:
 
         for i in range(2,len(string)):
             if(string[i]== sep):
-                #string[lastSep:i].append(decodeCom["par"])
                 decodeCom["params"].append(string[lastSep:i])
                 lastSep = i
             if(i == (len(string)-1)):
-                #string[lastSep:i].append(decodeCom["par"])
-                decodeCom["params"].append(string[lastSep:i])
+                decodeCom["params"].append(string[lastSep:i+1])
 
         return(decodeCom)
 
@@ -123,5 +121,26 @@ class AntennaInterface:
             if(time.monotonic() >= expireTime):
                 raise NoFeatures("timeout")
                 return(None)
+
+    def swithGPS(self,timeVal,timeout):
+        string = 'A:'+str(timeVal)+'\n'
+        self.serial.writeSerial(str.encode(string))
+
+        expireTime = time.monotonic() + timeout
+
+        while True:
+            inString = self.serial.readSerial()
+            if(inString != None):
+                decodeCom= self.decodeCommand(inString)
+                #Check if the incoming sentence is the one that we are waiting.
+                if(decodeCom["id"]=='A'):
+                    print(inString)
+                    print(decodeCom)
+                    return(decodeCom["params"])
+                                    
+            if(time.monotonic() >= expireTime):
+                raise NoFeatures("timeout")
+                return(None)
+
 
 

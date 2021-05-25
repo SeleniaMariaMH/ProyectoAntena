@@ -10,7 +10,7 @@
 #include <Servo.h>
 #include <Stepper.h>
 
-#define SERVO_PIN 9
+
 
 #define TIMER1_INTERVAL_MS 10000
 #define WAIT_TIME_SERVO 1500
@@ -25,12 +25,18 @@ bool f_serialNewLine = false; // whether the string is complete
 String inputString = ""; // a String to hold incoming data
 unsigned int outputPin1 = LED_BUILTIN;
 Servo miServo; // Creo objeto de la clase Servo.
+
+//SERVO PINOUT
+#define SERVO_PIN 9
+
+//STEPPER PINOUT
 const int dirPin = 8;
-const int stepPin = 9;
+const int stepPin = 6;
 const int enable = 7;
 float PosIni = 0;
 
-const int muxSelector = 6; // A activo a nivel bajo, B a nivel alto
+//MULTIPLEXER PINOUT
+const int muxSelector = 4; // A activo a nivel bajo, B a nivel alto
 const int muxEnable = 5;   // G activo a nivel bajo (enable)
 
 //Function for analysing the system periodically and sending information the host
@@ -180,7 +186,7 @@ int exeCommand(SerialCommand inCommand)
     }
     float pos = inCommand.params[0].toFloat();
 
-    MovStepperMotor(dirPin, stepPin, enable, 10, &PosIni);
+    MovStepperMotor(dirPin, stepPin, enable, pos, &PosIni);
 
     //Returns the the servo has arrived
     Serial.println("M:OK");
@@ -188,7 +194,7 @@ int exeCommand(SerialCommand inCommand)
   }
 
   // Switching the MUX for communicating with the GPS
-  else if (inCommand.command == 'G')
+  else if (inCommand.command == 'A')
   {
     if (inCommand.nParams != 1)
     {
@@ -199,7 +205,7 @@ int exeCommand(SerialCommand inCommand)
     switchUSART(muxSelector, muxEnable, switchTime);
 
     //Returns the the servo has arrived
-    Serial.println("G:OK");
+    Serial.println("A:OK");
     return 0;
   }
 

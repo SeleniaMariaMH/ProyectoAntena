@@ -10,7 +10,7 @@
 #define movMax 5
 
 const int dirPin = 8;
-const int stepPin = 9;
+const int stepPin = 6;
 const int enable = 7;
 float PosIni = 0;
 
@@ -27,8 +27,8 @@ void setup()
 // 200 pasos * nºmicropasos y antena 72.
 void loop() 
 {
-  MovStepperMotor(dirPin, stepPin, enable, 10);
-  delay(1000);
+  MovStepperMotor(dirPin, stepPin, enable, 500);
+  delay(100);
 }
 
 void MovStepperMotor(const int dirPin, const int stepPin, const int enable, float PosFinal)
