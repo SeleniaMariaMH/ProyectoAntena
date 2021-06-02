@@ -143,14 +143,17 @@ class AntennaInterface:
                 raise NoFeatures("timeout")
                 return(None)
 
-    def swithGPS(self,timeVal,timeout):
+    def switchGPS(self,timeVal):
         self.serial.openPort()
         string = 'A:'+str(timeVal)+'\n'
         self.serial.writeSerial(str.encode(string))
 
+        self.serial.closePort()
+
         
 
-    def waitArduino(self,timeout):
+    def waitForArduino(self,timeout):
+        self.serial.openPort()
         expireTime = time.monotonic() + timeout
 
         while True:
