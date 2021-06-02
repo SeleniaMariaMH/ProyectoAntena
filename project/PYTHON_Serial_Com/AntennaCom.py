@@ -13,7 +13,7 @@ class AntennaInterface:
 
     def readSentence(self):
         incomingSentence = self.serial.readSerial() 
-        if( incomingSentence != None):
+        if( incomingSentence != None):   
             print(incomingSentence)
             return(0)
         else:
@@ -42,7 +42,7 @@ class AntennaInterface:
 
 
     def calibrateImu(self,timeout):
-        self.serial.open()
+        self.serial.openPort()
         self.serial.writeSerial(b'C:0\n')
         
         expireTime = time.monotonic() + timeout
@@ -56,20 +56,20 @@ class AntennaInterface:
                 if(decodeCom["id"]=='C'):
                     print(inString)
                     print(decodeCom)
-                    self.serial.close()
+                    self.serial.closePort()
 
                     return()
 
             if(time.monotonic() >= expireTime):
+                self.serial.closePort()
                 raise NoFeatures("timeout")
-                self.serial.close()
 
                 return(None)
         
         
 
     def getImuData(self,timeout):
-        self.serial.open()
+        self.serial.openPort()  
         self.serial.writeSerial(b'G:0\n')
         
         expireTime = time.monotonic() + timeout
@@ -82,18 +82,18 @@ class AntennaInterface:
                 if(decodeCom["id"]=='G'):
                     print(inString)
                     print(decodeCom)
-                    self.serial.close()
+                    self.serial.closePort()
 
                     return(decodeCom["params"])
                                     
             if(time.monotonic() >= expireTime):
-                self.serial.close()
+                self.serial.closePort()
 
                 raise NoFeatures("timeout")
                 return(None)
 
     def moveServo(self,position,timeout):
-        self.serial.open()
+        self.serial.openPort()
         string = 'S:'+str(position)+'\n'
         self.serial.writeSerial(str.encode(string))
         
@@ -107,19 +107,19 @@ class AntennaInterface:
                 if(decodeCom["id"]=='S'):
                     print(inString)
                     print(decodeCom)
-                    self.serial.close()
+                    self.serial.closePort()
 
                     return(decodeCom["params"])
                                     
             if(time.monotonic() >= expireTime):
-                self.serial.close()
+                self.serial.closePort()
 
                 raise NoFeatures("timeout")
                 return(None)
 
 
     def moveStepper(self,position,timeout):
-        self.serial.open()
+        self.serial.openPort()
         string = 'M:'+str(position)+'\n'
         self.serial.writeSerial(str.encode(string))
         
@@ -133,18 +133,18 @@ class AntennaInterface:
                 if(decodeCom["id"]=='M'):
                     print(inString)
                     print(decodeCom)
-                    self.serial.close()
+                    self.serial.closePort()
 
                     return(decodeCom["params"])
                                     
             if(time.monotonic() >= expireTime):
-                self.serial.close()
+                self.serial.closePort()
 
                 raise NoFeatures("timeout")
                 return(None)
 
     def swithGPS(self,timeVal,timeout):
-        self.serial.open()
+        self.serial.openPort()
         string = 'A:'+str(timeVal)+'\n'
         self.serial.writeSerial(str.encode(string))
 
@@ -158,12 +158,12 @@ class AntennaInterface:
                 if(decodeCom["id"]=='A'):
                     print(inString)
                     print(decodeCom)
-                    self.serial.close()
+                    self.serial.closePort()
 
                     return(decodeCom["params"])
                                     
             if(time.monotonic() >= expireTime):
-                self.serial.close()
+                self.serial.closePort()
 
                 raise NoFeatures("timeout")
                 return(None)
@@ -177,12 +177,13 @@ antenna = AntennaInterface('COM4',9600)
 i = 0
 while True:
     time.sleep((0.1))
-    antenna.readSentence()
+    #antenna.readSentence()
 
-    if (i==100):
+    if (i==50):
 
         try:
-            data=antenna.swithGPS(100,100)
+            print("COMMAND SENDED")
+            data=antenna.moveServo(5,100)
             print("INCOMING DATA:")
             print(data)
         except NoFeatures:

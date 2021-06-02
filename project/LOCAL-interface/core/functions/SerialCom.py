@@ -3,14 +3,12 @@ import time
 import threading
 
 class SerialCommunications:
-
     incData = ""
 
     def __init__(self,port,baudrate):
-        try:
-            self.serialPort = serial.Serial(port, baudrate)
-        except:
-            print("ERROR PORT")
+        self.serialPort = serial.Serial(port, baudrate)
+        time.sleep(0.05)
+        self.serialPort.close()
 
     def writeSerial(self,sentence):
         self.serialPort.write(sentence)
@@ -22,9 +20,18 @@ class SerialCommunications:
         else:
             return(None)
     
+    def openPort(self):
+        try:
+            self.serialPort.open()
+        except:
+            print("ERROR OPENING PORT")
+
+        time.sleep(0.05)
+
     def closePort(self):
-        print("Thread stopped.")
         self.serialPort.close()
+
+
 
 
 

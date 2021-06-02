@@ -43,15 +43,18 @@ print(welcomeMessage)
 antenna = AntennaInterface(portName, baudRate)
 
 # multiplex to GPS.
+swithGPS(100,1)
 
 # know our position.
-#(ourLat, ourLon) = GetOurPosition(portName, baudRate)
-(ourLat, ourLon) = (28.07147116814593, -15.453824236756027)
+(ourLat, ourLon) = GetOurPosition(portName, baudRate)
+#(ourLat, ourLon) = (28.07147116814593, -15.453824236756027)
+
+# wait for the mux to come back to to Arduino
+waitForArduino(100)
 
 # create DRON positions list
 createDronPositionList(dronPosList, ourLat, ourLon)
 
-# multiplex to arduino.
 
 # get magnetometer and accelerometer calibrated values (magValue, accValue)
 try:

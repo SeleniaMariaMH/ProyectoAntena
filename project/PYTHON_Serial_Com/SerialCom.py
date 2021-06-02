@@ -7,6 +7,7 @@ class SerialCommunications:
 
     def __init__(self,port,baudrate):
         self.serialPort = serial.Serial(port, baudrate)
+        time.sleep(0.05)
         self.serialPort.close()
 
     def writeSerial(self,sentence):
@@ -20,7 +21,12 @@ class SerialCommunications:
             return(None)
     
     def openPort(self):
-        self.serialPort.open()
+        try:
+            self.serialPort.open()
+        except:
+            print("ERROR OPENING PORT")
+
+        time.sleep(0.05)
 
     def closePort(self):
         self.serialPort.close()

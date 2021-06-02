@@ -204,6 +204,11 @@ int exeCommand(SerialCommand inCommand)
 
     switchUSART(muxSelector, muxEnable, switchTime);
 
+    //Clears the buffers 
+    while(Serial.available() > 0) {
+      char t = Serial.read();
+    }
+
     //Returns the the servo has arrived
     Serial.println("A:OK");
     return 0;
