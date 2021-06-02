@@ -51,8 +51,6 @@ class GPS:
 		return self.Latitude, self.Longitude
 
 
-
-
 	# xxxxxxxxxx Internal methods xxxxxxxxxx #
 
 	def measureInBackgroundThread(self, args):

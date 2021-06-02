@@ -110,7 +110,7 @@ def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
     gps.connect()
     gps.startMeasuring()
 
-    sleep(1)
+    sleep(0.1)
 
     numTry = 0
     ourLat = None
@@ -135,7 +135,7 @@ def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
             latSum += ourLat
             lonSum += ourLon
 
-            sleep(2)
+            sleep(1)
 
         ourLat = latSum/numMeasure
         ourLon = lonSum/numMeasure
@@ -148,7 +148,7 @@ def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
         print("ERROR! No coverage. Try again.")
 
     gps.stopMeasuring()
-    
+
     return ourLat, ourLon
 
 
