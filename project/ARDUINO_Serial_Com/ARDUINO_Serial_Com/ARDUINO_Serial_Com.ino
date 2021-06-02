@@ -13,7 +13,7 @@
 
 
 #define TIMER1_INTERVAL_MS 10000
-#define WAIT_TIME_SERVO 1500
+#define WAIT_TIME_SERVO 100
 
 //DEFINITION OF OBJECTS
 ReducedMPU9250 mpu(false);
@@ -38,6 +38,9 @@ float PosIni = 0;
 //MULTIPLEXER PINOUT
 const int muxSelector = 4; // A activo a nivel bajo, B a nivel alto
 const int muxEnable = 5;   // G activo a nivel bajo (enable)
+
+//Switch Homming Pin
+#define interrupPin 2
 
 //Function for analysing the system periodically and sending information the host
 void TimerHandler1(unsigned int outputPin = LED_BUILTIN)
@@ -95,6 +98,9 @@ void setup()
   pinMode(muxEnable, OUTPUT);
   digitalWrite(muxEnable, LOW);   // Enable activo.
   digitalWrite(muxSelector, LOW); // Habilitamos comunicaciones con A (Arduino)
+
+  //Initi the switch pin for homming
+  pinMode(interrupPin, INPUT);
 }
 
 int exeCommand(SerialCommand inCommand)
@@ -212,6 +218,24 @@ int exeCommand(SerialCommand inCommand)
     //Returns the the servo has arrived
     Serial.println("A:OK");
     return 0;
+  }
+
+  // Function for homming
+  else if (inCommand.command == 'H')
+  {
+    float pos = 180;
+    MovServoMotor(&miServo, pos, WAIT_TIME_SERVO);
+    delay(200);
+    while((digitalRead(interrupPin) == LOW )&& (pos > 0)){
+      //Serial.println(pos);
+      MovServoMotor(&miServo, pos, WAIT_TIME_SERVO);
+      pos = pos - 10;
+    }
+    
+    //Returns the ACK
+    Serial.println("H:OK");
+    return 0;
+    
   }
 
   else
