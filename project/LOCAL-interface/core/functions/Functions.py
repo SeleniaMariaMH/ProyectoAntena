@@ -104,40 +104,53 @@ def SelectUSBPortAndBaudRate():
 # function to get our position via GPS
 # @param:   portName (GPS USB port), baudRate, timeOut (default: 3s), numMeasure (default: 10 measures)
 # @return:  latitude (degrees) and longitude (degrees)
-def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10):
+def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
 
     gps = GPS(portName, baudRate, timeOut)
     gps.connect()
     gps.startMeasuring()
 
+    sleep(1)
+
+    numTry = 0
+    ourLat = None
+    ourLon = None
     latSum = 0
     lonSum = 0
 
-    while(gps.getPosition() == (None, None)):
-        print("No coverage...")
-        sleep(3)
-
-    for i in range(0, numMeasure):
+    while(((ourLat, ourLon) == (None, None)) and (numTry < nTry)):
+        print("{", numTry, "} No coverage...")
         (ourLat, ourLon) = gps.getPosition()
-        print("----- Measure ", i, " -----")
-        print("Our latitude: ", ourLat, "º")
-        print("Our longitude: ", ourLon, "º")
+        numTry += 1
 
-        latSum += ourLat
-        lonSum += ourLon
+        sleep(1)
 
-        sleep(2)
+    if ((ourLat, ourLon) != (None, None)):
+        for i in range(0, numMeasure):
+            (ourLat, ourLon) = gps.getPosition()
+            print("----- Measure ", i, " -----")
+            print("Our latitude: ", ourLat, "º")
+            print("Our longitude: ", ourLon, "º")
+
+            latSum += ourLat
+            lonSum += ourLon
+
+            sleep(2)
+
+        ourLat = latSum/numMeasure
+        ourLon = lonSum/numMeasure
+
+        print("----- OUR POSITION: -----")
+        print("Latitude: ", ourLat, "º")
+        print("Longitude: ", ourLon, "º")
+
+    else:
+        print("ERROR! No coverage. Try again.")
 
     gps.stopMeasuring()
-
-    ourLat = latSum/numMeasure
-    ourLon = lonSum/numMeasure
-
-    print("----- OUR POSITION: -----")
-    print("Latitude: ", ourLat, "º")
-    print("Longitude: ", ourLon, "º")
-
+    
     return ourLat, ourLon
+
 
 # rotation matrix -> R = [(A×M)×A, A×M, A];
 def CalculateRotationMatrix(magnetometerData, accelerometerData):

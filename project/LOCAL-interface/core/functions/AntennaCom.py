@@ -154,6 +154,7 @@ class AntennaInterface:
 
     def waitForArduino(self,timeout):
         self.serial.openPort()
+        time.sleep(0.100)
         expireTime = time.monotonic() + timeout
 
         while True:

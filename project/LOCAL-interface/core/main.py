@@ -10,8 +10,8 @@ from functions.DronPositionSimulationClass import *
 
 #   main program
 # variables.
-ourLat = 0.0
-ourLon = 0.0
+ourLat = None
+ourLon = None
 ourHei = 0.0
 dronLat = 0.0
 dronLon = 0.0
@@ -43,18 +43,21 @@ print(welcomeMessage)
 antenna = AntennaInterface(portName, baudRate)
 
 # multiplex to GPS.
-antenna.switchGPS(10000)
+while((ourLat, ourLon) == (None, None)):
 
-# know our position.
-(ourLat, ourLon) = GetOurPosition(portName, baudRate)
-#(ourLat, ourLon) = (28.07147116814593, -15.453824236756027)
+    antenna.switchGPS(10000)
+    print("Serial communication with GPS is started.")
 
-# wait for the mux to come back to to Arduino
-antenna.waitForArduino(100)
+    # know our position.
+    (ourLat, ourLon) = GetOurPosition(portName, baudRate)
+    # (ourLat, ourLon) = (28.07147116814593, -15.453824236756027)
+
+    # wait for the mux to come back to to Arduino
+    print("Serial communication with Arduino is started.")
+    antenna.waitForArduino(1)
 
 # create DRON positions list
 createDronPositionList(dronPosList, ourLat, ourLon)
-
 
 # get magnetometer and accelerometer calibrated values (magValue, accValue)
 try:
