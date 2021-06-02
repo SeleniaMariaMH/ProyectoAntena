@@ -54,7 +54,11 @@ while((ourLat, ourLon) == (None, None)):
 
     # wait for the mux to come back to to Arduino
     print("Serial communication with Arduino is started.")
-    antenna.waitForArduino(1)
+    try:
+        antenna.waitForArduino(1)
+    except NoFeatures:
+        print("ERROR: TIMEOUT SERVO COM")
+    
 
 # create DRON positions list
 createDronPositionList(dronPosList, ourLat, ourLon)

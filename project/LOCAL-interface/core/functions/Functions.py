@@ -135,7 +135,12 @@ def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
             latSum += ourLat
             lonSum += ourLon
 
+<<<<<<< HEAD
             sleep(1)
+=======
+            sleep(2)
+        gps.stopMeasuring()
+>>>>>>> refs/remotes/origin/main
 
         ourLat = latSum/numMeasure
         ourLon = lonSum/numMeasure
@@ -147,8 +152,17 @@ def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
     else:
         print("ERROR! No coverage. Try again.")
 
+<<<<<<< HEAD
     gps.stopMeasuring()
 
+=======
+    print("GPS Disconnecting")
+    
+    #gps.disconnect()
+    print("GPS Disconnected")
+
+    
+>>>>>>> refs/remotes/origin/main
     return ourLat, ourLon
 
 

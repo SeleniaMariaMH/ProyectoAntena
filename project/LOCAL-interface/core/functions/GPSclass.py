@@ -33,6 +33,10 @@ class GPS:
 		self.gpsSerial = serial.Serial(self.portName, self.baudRate, timeout=self.timeOut)
 		time.sleep(3)
 
+	def disconnect(self):
+		self.gpsSerial.close()
+
+
 	def startMeasuring(self):
 		if not self.backgroundThreadIsActive: 
 			self.backgroundThreadShouldGoOn = True

@@ -56,8 +56,8 @@ void updateAccelerometerCalibrationScale(ReducedMPU9250 *accelMag, int axisIndex
 
 void MovServoMotor(Servo *miServo, float posFinal, int tiempoEspera)
 {
-  posFinal = map(posFinal, 0, 1023, 0, 180); // scale it to use it with the servo (value between 0 and 180)
-  miServo->write(posFinal);
+  //posFinal = map(posFinal, 0, 1023, 0, 180); // scale it to use it with the servo (value between 0 and 180)
+  miServo->write((int)posFinal);
   delay(tiempoEspera);
 }
 
