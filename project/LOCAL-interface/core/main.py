@@ -57,20 +57,8 @@ while (ourLat, ourLon) == (None, None):
     (ourLat, ourLon) = GetOurPosition(gps) # (28.07147116814593, -15.453824236756027)
 
     # Wait for Arduino.
-    sleep(5)
-
-    # Clear serial port
-
-
+    antenna.waitForArduino(5)
     print("************************ Serial communication with Arduino started ************************")
-
-
-
-    # wait for the mux to come back to to Arduino
-    #try:
-     #   antenna.waitForArduino(100)
-    #except NoFeatures:
-     #   print("ERROR! Timeout in 'waitForArduino'. ")
 
 # Calibration:
 print("Do you want to calibrate antenna IMU?: ", end='')
@@ -106,7 +94,7 @@ rotMatrix = CalculateRotationMatrix(magValue, accValue)
 createDronPositionList(dronPosList, ourLat, ourLon)
 
 # position object: DRON
-dron = PositionSimulation(dronPosList)
+dron = PositionSimulation(dronPosList, 10)
 
 # start DRON
 dron.start()
@@ -141,7 +129,7 @@ while(True):
             print("ERROR! Timeout in 'moveStepper'.")
 
         # loop delay
-        sleep(2)
+        sleep(0.1)
 
     except KeyboardInterrupt: # ctrl + c
         print("\n"
