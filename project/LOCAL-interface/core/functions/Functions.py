@@ -72,7 +72,7 @@ def SelectUSBPortAndBaudRate():
 
     status = True
     while(status):
-        iPortName = input()
+        iPortName = input(">>")
         if (int(iPortName) > (len(portsName) - 1)):
             print("ERROR! Select a correct value. ")
             print("Select port name [0 to", (len(portsName) - 1), "]: ")
@@ -89,7 +89,7 @@ def SelectUSBPortAndBaudRate():
 
     status = True
     while (status):
-        iBaudRate = input()
+        iBaudRate = input(">>")
         if (int(iBaudRate) > (len(baudRates) - 1)):
             print("ERROR! Select a correct value. ")
             print("Select baud rate [0 to", (len(baudRates) - 1), "]: ")

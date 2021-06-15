@@ -67,7 +67,7 @@ while (ourLat, ourLon) == (None, None):
 # Calibration:
 print("Do you want to calibrate antenna IMU?: ", end='')
 print("(y) YES / (n) NO")
-iResponse = input()
+iResponse = input(">>")
 
 if iResponse == "y":
     print("Starting antenna IMU calibration. ")
@@ -135,7 +135,7 @@ while(True):
         # loop delay
         sleep(2)
 
-    except KeyboardInterrupt:
+    except KeyboardInterrupt: # ctrl + c
         print("\n"
               "************ Menu ************ \n"
               "(c) Calibrate antenna IMU. \n"
