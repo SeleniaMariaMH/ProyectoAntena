@@ -19,6 +19,13 @@ class SerialCommunications:
             return(self.serialPort.read_until().decode('utf8').strip())
         else:
             return(None)
+
+
+    def flushBufferSerial(self):
+        try:
+            self.serialPort.reset_input_buffer()
+        except:
+            print("ERROR CLEANING INPUT PORT")
     
     def openPort(self):
         try:

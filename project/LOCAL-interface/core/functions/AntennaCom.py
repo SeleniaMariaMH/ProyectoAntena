@@ -1,4 +1,5 @@
 
+
 from functions.SerialCom import SerialCommunications
 import time
 
@@ -151,28 +152,34 @@ class AntennaInterface:
         self.serial.closePort()
 
         
+    # def waitForArduino(self,timeout):
+    #     self.serial.openPort()
+    #     time.sleep(0.100)
+    #     expireTime = time.monotonic() + timeout
 
-    def waitForArduino(self,timeout):
-        self.serial.openPort()
-        time.sleep(0.100)
-        expireTime = time.monotonic() + timeout
+    #     while True:
+    #         inString = self.serial.readSerial()
+    #         if(inString != None):
+    #             decodeCom= self.decodeCommand(inString)
+    #             #Check if the incoming sentence is the one that we are waiting.
+    #             if(decodeCom["id"]=='A'):
+    #                 print(inString)
+    #                 print(decodeCom)
+    #                 self.serial.closePort()
 
-        while True:
-            inString = self.serial.readSerial()
-            if(inString != None):
-                decodeCom= self.decodeCommand(inString)
-                #Check if the incoming sentence is the one that we are waiting.
-                if(decodeCom["id"]=='A'):
-                    print(inString)
-                    print(decodeCom)
-                    self.serial.closePort()
-
-                    return(decodeCom["params"])
+    #                 return(decodeCom["params"])
                                     
-            if(time.monotonic() >= expireTime):
-                self.serial.closePort()
+    #         if(time.monotonic() >= expireTime):
+    #             self.serial.closePort()
 
-                raise NoFeatures("timeout")
-                return(None)
+    #             raise NoFeatures("timeout")
+    #             return(None)
+
+    def waitForArduino(self,delay):
+        self.serial.openPort()
+        time.sleep(delay)
+        self.serial.flushBufferSerial()
+        time.sleep(0.1)
+        self.serial.closePort()
 
 
