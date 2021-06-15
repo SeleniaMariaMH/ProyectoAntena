@@ -117,23 +117,18 @@ def GetOurPosition(gps, numMeasure = 5, numTry = 3):
     print("INFO: Measuring... ")
 
     # Checking coverage:
-    print("INFO: Checking coverage", end = '')
+    print("INFO: Checking coverage", end='')
     for i in range(0, numTry):
         (ourLat, ourLon) = gps.getPosition()
-        print(".", end = '')
+        print(".", end='')
         sleep(1)
     print("\n")
 
     # Measuring position:
     if ((ourLat, ourLon) != (None, None)):
-
+        print("SUCCESS! There is coverage. ")
         for i in range(0, numMeasure):
-
             (ourLat, ourLon) = gps.getPosition()
-            print("----- Measure ", i, "/", numMeasure, "-----")
-            print("Our latitude: ", ourLat, "º")
-            print("Our longitude: ", ourLon, "º")
-
             latSum += ourLat
             lonSum += ourLon
 

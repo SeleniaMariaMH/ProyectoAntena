@@ -43,12 +43,13 @@ print(welcomeMessage)
 antenna = AntennaInterface(portName, baudRate) # Antenna.
 gps = GPS(portName, baudRate, 10) # GPS.
 
-# Homing:
+# Homing.
 antenna.moveServo(0, 100)
 
-# multiplex to GPS.
-while((ourLat, ourLon) == (None, None)):
+# Multiplex to GPS.
+while (ourLat, ourLon) == (None, None):
 
+    # Switch to GPS.
     antenna.switchGPS(10000)
     print("************************ Serial communication with GPS started ************************")
 
@@ -63,11 +64,22 @@ while((ourLat, ourLon) == (None, None)):
     except NoFeatures:
         print("ERROR! Timeout in 'waitForArduino'. ")
 
-# get magnetometer and accelerometer calibrated values (magValue, accValue)
+# Calibration:
+print("Do you want to calibrate the antenna IMU?: ", end='')
+print("(y) YES / (n) NO")
+iResponse = input()
+
+if iResponse == "y":
+    print("Starting antenna IMU calibration. ")
+
+    # Call arduino calibration function
+    # !!!!!!!
+
+# Get magnetometer and accelerometer calibrated values (magValue, accValue)
 print("Getting IMU Data... ")
 try:
     imuData = antenna.getImuData(2)
-    print("Response: ", end = '')
+    print("Response: ", end='')
     print(imuData)
 
 except NoFeatures:
@@ -95,32 +107,33 @@ while(True):
 
     # DRON position
     (dronLat, dronLon, dronHei) = dron.getPosition()
-    print("Current DRON position: (", dronLat, "º,", dronLon, "º,", dronHei, "m)")
+    print("Dron position: (", dronLat, "º,", dronLon, "º,", dronHei, "m)")
 
     # calculate vector position.
     posVector = PositionVector(ourLat, ourLon, ourHei, dronLat, dronLon, dronHei)
 
     # change vector position reference.
     posVectorRef = VectorToVector(posVector, rotMatrix)
-    print("  -   Position vector: [", posVectorRef[0], ",", posVectorRef[1], ",", posVectorRef[2], "]")
+    print("Position vector: [", posVectorRef[0], ",", posVectorRef[1], ",", posVectorRef[2], "]")
 
     # calculate rotation and inclination angles.
     (rotDeg, incDeg) = RotationAndInclination(posVectorRef)
-    print("  -   Rotation angle: ", rotDeg, "º \n  -   Inclination angle: ", incDeg, "º \n")
+    print(">> Rotation angle: ", rotDeg, "º \n  "
+          ">> Inclination angle: ", incDeg, "º \n")
 
     # send rotation and inclination angles to arduino (rotDeg, incDeg)
     try:
         data=antenna.moveServo(incDeg, 5)
     except NoFeatures:
-        print("ERROR: TIMEOUT SERVO COM")
+        print("ERROR! Timeout in 'moveServo'.")
     
     try:
         data=antenna.moveStepper(rotDeg, 5)
     except NoFeatures:
-        print("ERROR: TIMEOUT STEPPER COM")
+        print("ERROR! Timeout in 'moveStepper'.")
 
     # loop delay
-    time.sleep(2)
+    sleep(2)
 
 # stop position object
 dron.stop()
