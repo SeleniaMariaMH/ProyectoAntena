@@ -31,11 +31,11 @@ class GPS:
 
 	def connect(self):
 		self.gpsSerial = serial.Serial(self.portName, self.baudRate, timeout=self.timeOut)
-		time.sleep(3)
+		time.sleep(0.5)
 
 	def disconnect(self):
 		self.gpsSerial.close()
-
+		time.sleep(0.5)
 
 	def startMeasuring(self):
 		if not self.backgroundThreadIsActive: 
@@ -43,12 +43,14 @@ class GPS:
 			self.backgroundThread = threading.Thread(target=self.measureInBackgroundThread, args=(1,))
 			self.backgroundThread.start()
 			self.backgroundThreadIsActive = True
-				
+		time.sleep(0.1)
+
 	def stopMeasuring(self):
 		if self.backgroundThreadIsActive:
 			self.backgroundThreadShouldGoOn = False
 			self.backgroundThread.join()
 			self.backgroundThreadIsActive = False
+		time.sleep(0.1)
 
 	def getPosition(self):
 		self.updateLatLon()

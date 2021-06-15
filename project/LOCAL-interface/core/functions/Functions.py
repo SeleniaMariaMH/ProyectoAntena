@@ -104,43 +104,40 @@ def SelectUSBPortAndBaudRate():
 # function to get our position via GPS
 # @param:   portName (GPS USB port), baudRate, timeOut (default: 3s), numMeasure (default: 10 measures)
 # @return:  latitude (degrees) and longitude (degrees)
-def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
+def GetOurPosition(gps, numMeasure = 5, numTry = 3):
 
-    gps = GPS(portName, baudRate, timeOut)
-    gps.connect()
-    gps.startMeasuring()
-
-    sleep(0.1)
-
-    numTry = 0
     ourLat = None
     ourLon = None
     latSum = 0
     lonSum = 0
 
-    while(((ourLat, ourLon) == (None, None)) and (numTry < nTry)):
-        print("{", numTry, "} No coverage...")
+    gps.connect()
+    print("INFO: GPS connected.")
+    gps.startMeasuring()
+    print("INFO: Measuring... ")
+
+    # Checking coverage:
+    print("INFO: Checking coverage", end = '')
+    for i in range(0, numTry):
         (ourLat, ourLon) = gps.getPosition()
-        numTry += 1
-
+        print(".", end = '')
         sleep(1)
+    print("\n")
 
+    # Measuring position:
     if ((ourLat, ourLon) != (None, None)):
+
         for i in range(0, numMeasure):
+
             (ourLat, ourLon) = gps.getPosition()
-            print("----- Measure ", i, " -----")
+            print("----- Measure ", i, "/", numMeasure, "-----")
             print("Our latitude: ", ourLat, "º")
             print("Our longitude: ", ourLon, "º")
 
             latSum += ourLat
             lonSum += ourLon
 
-<<<<<<< HEAD
-            sleep(1)
-=======
-            sleep(2)
-        gps.stopMeasuring()
->>>>>>> refs/remotes/origin/main
+            sleep(0.2)
 
         ourLat = latSum/numMeasure
         ourLon = lonSum/numMeasure
@@ -150,21 +147,15 @@ def GetOurPosition(portName, baudRate, timeOut = 10, numMeasure = 10, nTry = 3):
         print("Longitude: ", ourLon, "º")
 
     else:
-        print("ERROR! No coverage. Try again.")
+        print("ERROR! No coverage. Please, move the antenna and try again.")
 
-<<<<<<< HEAD
+
     gps.stopMeasuring()
+    print("INFO: Measuring completed. ")
+    gps.disconnect()
+    print("INFO: GPS disconnected. ")
 
-=======
-    print("GPS Disconnecting")
-    
-    #gps.disconnect()
-    print("GPS Disconnected")
-
-    
->>>>>>> refs/remotes/origin/main
     return ourLat, ourLon
-
 
 # rotation matrix -> R = [(A×M)×A, A×M, A];
 def CalculateRotationMatrix(magnetometerData, accelerometerData):

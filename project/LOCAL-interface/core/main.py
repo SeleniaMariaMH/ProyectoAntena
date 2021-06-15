@@ -9,7 +9,7 @@ from functions.AntennaCom import *
 from functions.DronPositionSimulationClass import *
 
 #   main program
-# variables.
+# variables
 ourLat = None
 ourLon = None
 ourHei = 0.0
@@ -39,45 +39,51 @@ print(welcomeMessage)
 # Select USB port and baud rate.
 (portName, baudRate) = SelectUSBPortAndBaudRate()
 
-# Antenna interface object.
-antenna = AntennaInterface(portName, baudRate)
+# Create objects.
+antenna = AntennaInterface(portName, baudRate) # Antenna.
+gps = GPS(portName, baudRate, 10) # GPS.
+
+# Homing:
+antenna.moveServo(0, 100)
 
 # multiplex to GPS.
 while((ourLat, ourLon) == (None, None)):
 
     antenna.switchGPS(10000)
-    print("Serial communication with GPS is started.")
+    print("************************ Serial communication with GPS started ************************")
 
     # know our position.
-    (ourLat, ourLon) = GetOurPosition(portName, baudRate)
-    # (ourLat, ourLon) = (28.07147116814593, -15.453824236756027)
+    (ourLat, ourLon) = GetOurPosition(gps) # (28.07147116814593, -15.453824236756027)
 
     # wait for the mux to come back to to Arduino
-    print("Serial communication with Arduino is started.")
     try:
-        antenna.waitForArduino(1)
-    except NoFeatures:
-        print("ERROR: TIMEOUT SERVO COM")
-    
+        antenna.waitForArduino(100)
+        print("************************ Serial communication with Arduino started ************************")
 
-# create DRON positions list
-createDronPositionList(dronPosList, ourLat, ourLon)
+    except NoFeatures:
+        print("ERROR! Timeout in 'waitForArduino'. ")
 
 # get magnetometer and accelerometer calibrated values (magValue, accValue)
+print("Getting IMU Data... ")
 try:
-    data = antenna.getImuData(2)
-    print("INCOMING DATA:")
-    print(data)
-except NoFeatures:
-    print("ERROR: TIMEOUT")
+    imuData = antenna.getImuData(2)
+    print("Response: ", end = '')
+    print(imuData)
 
-accValue = data[0:3]
-print("Accelerometer value: [", accValue[0], ",", accValue[1], ",", accValue[2], "] \n")
-magValue = data[3:6]
-print("Magnetometer value: [", magValue[0], ",", magValue[1], ",", magValue[2], "] \n")
+except NoFeatures:
+    print("ERROR! Timeout in 'getImuData'. ")
+
+accValue = [float(imuData[0]), float(imuData[1]), float(imuData[2])] # imuData[0:3]
+magValue = [float(imuData[3]), float(imuData[4]), float(imuData[5])] # imuData[3:6]
+
+print("Accelerometer: [", accValue[0], ",", accValue[1], ",", accValue[2], "] \n")
+print("Magnetometer: [", magValue[0], ",", magValue[1], ",", magValue[2], "] \n")
 
 # calculate our rotation matrix.
 rotMatrix = CalculateRotationMatrix(magValue, accValue)
+
+# create DRON positions list
+createDronPositionList(dronPosList, ourLat, ourLon)
 
 # position object: DRON
 dron = PositionSimulation(dronPosList)
@@ -104,19 +110,17 @@ while(True):
 
     # send rotation and inclination angles to arduino (rotDeg, incDeg)
     try:
-        data=antenna.moveServo(incDeg,5)
+        data=antenna.moveServo(incDeg, 5)
     except NoFeatures:
         print("ERROR: TIMEOUT SERVO COM")
     
     try:
-        data=antenna.moveStepper(rotDeg,5)
+        data=antenna.moveStepper(rotDeg, 5)
     except NoFeatures:
         print("ERROR: TIMEOUT STEPPER COM")
-
-    # get arduino response (NOT  NEEDED)
 
     # loop delay
     time.sleep(2)
 
 # stop position object
-# dron.stop()
+dron.stop()
