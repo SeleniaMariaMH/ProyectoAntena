@@ -139,7 +139,7 @@ def GetOurPosition(gps, numMeasure = 5, numTry = 3):
 
         print("----- OUR POSITION: -----")
         print("Latitude: ", ourLat, "º")
-        print("Longitude: ", ourLon, "º")
+        print("Longitude: ", ourLon, "º\n")
 
     else:
         print("ERROR! No coverage. Please, move the antenna and try again.")
@@ -148,7 +148,7 @@ def GetOurPosition(gps, numMeasure = 5, numTry = 3):
     gps.stopMeasuring()
     print("INFO: Measuring completed. ")
     gps.disconnect()
-    print("INFO: GPS disconnected. ")
+    print("INFO: GPS disconnected. \n")
 
     return ourLat, ourLon
 

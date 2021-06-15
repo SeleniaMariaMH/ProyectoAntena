@@ -64,7 +64,7 @@ class GPS:
 		fullLine = ''
 		while self.backgroundThreadShouldGoOn:
 			if starting:
-				print('waiting for initial $')
+				# print('waiting for initial $')
 				while self.gpsSerial.read().decode('utf-8') != '$':
 					# print(self.gpsSerial.read().decode('utf-8'))
 					pass

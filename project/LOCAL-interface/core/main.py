@@ -44,25 +44,33 @@ antenna = AntennaInterface(portName, baudRate) # Antenna.
 gps = GPS(portName, baudRate, 10) # GPS.
 
 # Homing.
-antenna.moveServo(0, 100)
+# antenna.moveServo(0, 100)
 
 # Multiplex to GPS.
 while (ourLat, ourLon) == (None, None):
 
     # Switch to GPS.
-    antenna.switchGPS(10000)
+    antenna.switchGPS(7000)
     print("************************ Serial communication with GPS started ************************")
 
     # know our position.
     (ourLat, ourLon) = GetOurPosition(gps) # (28.07147116814593, -15.453824236756027)
 
-    # wait for the mux to come back to to Arduino
-    try:
-        antenna.waitForArduino(100)
-        print("************************ Serial communication with Arduino started ************************")
+    # Wait for Arduino.
+    sleep(5)
 
-    except NoFeatures:
-        print("ERROR! Timeout in 'waitForArduino'. ")
+    # Clear serial port
+
+
+    print("************************ Serial communication with Arduino started ************************")
+
+
+
+    # wait for the mux to come back to to Arduino
+    #try:
+     #   antenna.waitForArduino(100)
+    #except NoFeatures:
+     #   print("ERROR! Timeout in 'waitForArduino'. ")
 
 # Calibration:
 print("Do you want to calibrate antenna IMU?: ", end='')
