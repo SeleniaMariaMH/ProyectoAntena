@@ -1,10 +1,23 @@
+import time
 
-print("Do you want to calibrate the antenna IMU?: ", end='')
-print("(y) YES / (n) NO")
-iResponse = input()
+while(True):
+    try:
+        print("Controlling antenna...")
+        time.sleep(1)
 
-if iResponse == "y" or iResponse == "YES":
-    print("Starting antenna IMU calibration. ")
 
-    # Call arduino calibration function
+    except KeyboardInterrupt:
+        print("\n"
+              "************ Menu ************ \n"
+              "(c) Calibrate antenna IMU. \n"
+              "(p) Print antenna position. \n"
+              "(d) Print dron postition. \n"
+              "************ Menu ************")
 
+        iResponse = input(">>")
+
+        if iResponse == 'c':
+            print("Starting antenna IMU calibration. ")
+            for i in range(0,3):
+                print("Calibrating...")
+                time.sleep(1)

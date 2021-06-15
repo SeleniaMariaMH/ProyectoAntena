@@ -65,7 +65,7 @@ while (ourLat, ourLon) == (None, None):
         print("ERROR! Timeout in 'waitForArduino'. ")
 
 # Calibration:
-print("Do you want to calibrate the antenna IMU?: ", end='')
+print("Do you want to calibrate antenna IMU?: ", end='')
 print("(y) YES / (n) NO")
 iResponse = input()
 
@@ -104,36 +104,48 @@ dron = PositionSimulation(dronPosList)
 dron.start()
 
 while(True):
-
-    # DRON position
-    (dronLat, dronLon, dronHei) = dron.getPosition()
-    print("Dron position: (", dronLat, "º,", dronLon, "º,", dronHei, "m)")
-
-    # calculate vector position.
-    posVector = PositionVector(ourLat, ourLon, ourHei, dronLat, dronLon, dronHei)
-
-    # change vector position reference.
-    posVectorRef = VectorToVector(posVector, rotMatrix)
-    print("Position vector: [", posVectorRef[0], ",", posVectorRef[1], ",", posVectorRef[2], "]")
-
-    # calculate rotation and inclination angles.
-    (rotDeg, incDeg) = RotationAndInclination(posVectorRef)
-    print(">> Rotation angle: ", rotDeg, "º \n  "
-          ">> Inclination angle: ", incDeg, "º \n")
-
-    # send rotation and inclination angles to arduino (rotDeg, incDeg)
     try:
-        data=antenna.moveServo(incDeg, 5)
-    except NoFeatures:
-        print("ERROR! Timeout in 'moveServo'.")
+        # DRON position
+        (dronLat, dronLon, dronHei) = dron.getPosition()
+        print("Dron position: (", dronLat, "º,", dronLon, "º,", dronHei, "m)")
+
+        # calculate vector position.
+        posVector = PositionVector(ourLat, ourLon, ourHei, dronLat, dronLon, dronHei)
+
+        # change vector position reference.
+        posVectorRef = VectorToVector(posVector, rotMatrix)
+        print("Position vector: [", posVectorRef[0], ",", posVectorRef[1], ",", posVectorRef[2], "]")
+
+        # calculate rotation and inclination angles.
+        (rotDeg, incDeg) = RotationAndInclination(posVectorRef)
+        print(  ">> Rotation angle: ", rotDeg, "º \n  "
+                ">> Inclination angle: ", incDeg, "º \n")
+
+        # send rotation and inclination angles to arduino (rotDeg, incDeg)
+        try:
+            data=antenna.moveServo(incDeg, 5)
+        except NoFeatures:
+            print("ERROR! Timeout in 'moveServo'.")
     
-    try:
-        data=antenna.moveStepper(rotDeg, 5)
-    except NoFeatures:
-        print("ERROR! Timeout in 'moveStepper'.")
+        try:
+            data=antenna.moveStepper(rotDeg, 5)
+        except NoFeatures:
+            print("ERROR! Timeout in 'moveStepper'.")
 
-    # loop delay
-    sleep(2)
+        # loop delay
+        sleep(2)
+
+    except KeyboardInterrupt:
+        print("\n"
+              "************ Menu ************ \n"
+              "(c) Calibrate antenna IMU. \n"
+              "(p) Print antenna position. \n"
+              "(d) Print dron postition. \n"
+              "************ Menu ************")
+        iResponse = input(">>")
+
+        if iResponse == "c":
+            print("Starting antenna IMU calibration. ")
 
 # stop position object
 dron.stop()
