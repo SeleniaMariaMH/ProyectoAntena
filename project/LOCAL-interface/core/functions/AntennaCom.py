@@ -25,18 +25,22 @@ class AntennaInterface:
             "id": 0,
             "params" : []
         }
-        decodeCom["id"] = string[0]
-        decodeCom["params"]= []
-        sep = ' '
-        lastSep = 2
+
+        print(string)
+        if (string != None)&(string!=""):
+
+            decodeCom["id"] = string[0]
+            decodeCom["params"]= []
+            sep = ' '
+            lastSep = 2
 
 
-        for i in range(2,len(string)):
-            if(string[i]== sep):
-                decodeCom["params"].append(string[lastSep:i])
-                lastSep = i
-            if(i == (len(string)-1)):
-                decodeCom["params"].append(string[lastSep:i+1])
+            for i in range(2,len(string)):
+                if(string[i]== sep):
+                    decodeCom["params"].append(string[lastSep:i])
+                    lastSep = i
+                if(i == (len(string)-1)):
+                    decodeCom["params"].append(string[lastSep:i+1])
 
         return(decodeCom)
 
@@ -106,8 +110,8 @@ class AntennaInterface:
                 decodeCom= self.decodeCommand(inString)
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='S'):
-                    print(inString)
-                    print(decodeCom)
+                    #print(inString)
+                    #print(decodeCom)
                     self.serial.closePort()
 
                     return(decodeCom["params"])
@@ -132,8 +136,8 @@ class AntennaInterface:
                 decodeCom= self.decodeCommand(inString)
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='M'):
-                    print(inString)
-                    print(decodeCom)
+                    #print(inString)
+                    #print(decodeCom)
                     self.serial.closePort()
 
                     return(decodeCom["params"])

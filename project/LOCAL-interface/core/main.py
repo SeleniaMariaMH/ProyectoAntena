@@ -57,8 +57,20 @@ while (ourLat, ourLon) == (None, None):
     (ourLat, ourLon) = GetOurPosition(gps) # (28.07147116814593, -15.453824236756027)
 
     # Wait for Arduino.
-    antenna.waitForArduino(5)
+    sleep(5)
+
+    # Clear serial port
+
+
     print("************************ Serial communication with Arduino started ************************")
+
+
+
+    # wait for the mux to come back to to Arduino
+    #try:
+     #   antenna.waitForArduino(100)
+    #except NoFeatures:
+     #   print("ERROR! Timeout in 'waitForArduino'. ")
 
 # Calibration:
 print("Do you want to calibrate antenna IMU?: ", end='')
@@ -70,6 +82,12 @@ if iResponse == "y":
 
     # Call arduino calibration function
     # !!!!!!!
+    try:
+        antenna.calibrateImu(2000)
+
+    except NoFeatures:
+        print("ERROR! Timeout in 'calibrateIMU'. ")
+    
 
 # Get magnetometer and accelerometer calibrated values (magValue, accValue)
 print("Getting IMU Data... ")
@@ -84,6 +102,9 @@ except NoFeatures:
 accValue = [float(imuData[0]), float(imuData[1]), float(imuData[2])] # imuData[0:3]
 magValue = [float(imuData[3]), float(imuData[4]), float(imuData[5])] # imuData[3:6]
 
+##accValue = [float(0), float(0), float(9.8)] # imuData[0:3]
+#magValue = [float(1), float(0), float(0)] # imuData[3:6]
+
 print("Accelerometer: [", accValue[0], ",", accValue[1], ",", accValue[2], "] \n")
 print("Magnetometer: [", magValue[0], ",", magValue[1], ",", magValue[2], "] \n")
 
@@ -94,7 +115,7 @@ rotMatrix = CalculateRotationMatrix(magValue, accValue)
 createDronPositionList(dronPosList, ourLat, ourLon)
 
 # position object: DRON
-dron = PositionSimulation(dronPosList, 10)
+dron = PositionSimulation(dronPosList,2)
 
 # start DRON
 dron.start()
@@ -129,7 +150,7 @@ while(True):
             print("ERROR! Timeout in 'moveStepper'.")
 
         # loop delay
-        sleep(0.1)
+        #sleep(0.1)
 
     except KeyboardInterrupt: # ctrl + c
         print("\n"
