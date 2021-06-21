@@ -44,7 +44,7 @@ antenna = AntennaInterface(portName, baudRate) # Antenna.
 gps = GPS(portName, baudRate, 10) # GPS.
 
 # Homing.
-# antenna.moveServo(0, 100)
+antenna.homming(3000)
 
 # Multiplex to GPS.
 while (ourLat, ourLon) == (None, None):
