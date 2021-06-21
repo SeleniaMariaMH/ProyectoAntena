@@ -85,8 +85,8 @@ class AntennaInterface:
                 decodeCom= self.decodeCommand(inString)
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='G'):
-                    print(inString)
-                    print(decodeCom)
+                    #print(inString)
+                    #print(decodeCom)
                     self.serial.closePort()
 
                     return(decodeCom["params"])
@@ -161,5 +161,30 @@ class AntennaInterface:
         self.serial.flushBufferSerial()
         time.sleep(0.1)
         self.serial.closePort()
+
+    def calibrateImu(self,timeout):
+        self.serial.openPort()
+        self.serial.writeSerial(b'H:0\n')
+        
+        expireTime = time.monotonic() + timeout
+
+        while True:
+            inString = self.serial.readSerial()
+            if(inString != None):
+                decodeCom= self.decodeCommand(inString)
+
+                #Check if the incoming sentence is the one that we are waiting.
+                if(decodeCom["id"]=='H'):
+                    print(inString)
+                    print(decodeCom)
+                    self.serial.closePort()
+
+                    return()
+
+            if(time.monotonic() >= expireTime):
+                self.serial.closePort()
+                raise NoFeatures("timeout")
+
+                return(None)
 
 
