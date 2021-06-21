@@ -54,8 +54,6 @@ class AntennaInterface:
 
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='C'):
-                    print(inString)
-                    print(decodeCom)
                     self.serial.closePort()
 
                     return()

@@ -8,9 +8,7 @@
 
 struct SerialCommand
 {
-    /* Struct for saving the incoming command data*/
-
-    
+    /* Struct for saving the incoming command data*/    
     unsigned int command;
     short  nParams = 0;
     String params[4];

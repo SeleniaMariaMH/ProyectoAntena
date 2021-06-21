@@ -1,5 +1,6 @@
   
 # imports
+from time import sleep
 from functions.Functions import *
 
 # import of the communication library
@@ -54,7 +55,8 @@ while (ourLat, ourLon) == (None, None):
     print("************************ Serial communication with GPS started ************************")
 
     # know our position.
-    (ourLat, ourLon) = GetOurPosition(gps) # (28.07147116814593, -15.453824236756027)
+    #(ourLat, ourLon) = GetOurPosition(gps)  (28.07147116814593, -15.453824236756027)
+    (ourLat, ourLon) = (28.07147116814593, -15.453824236756027)
 
     # Wait for Arduino.
     sleep(5)
@@ -153,11 +155,32 @@ while(True):
             except NoFeatures:
                 print("ERROR! Timeout in 'calibrateIMU'. ")
 
+        # Get magnetometer and accelerometer calibrated values (magValue, accValue)
+        print("Getting IMU Data... ")
+        try:
+            imuData = antenna.getImuData(2)
+            print("Response: ", end='')
+            print(imuData)
+
+        except NoFeatures:
+            print("ERROR! Timeout in 'getImuData'. ")
+        
+        accValue = [float(imuData[0]), float(imuData[1]), float(imuData[2])] # imuData[0:3]
+        magValue = [float(imuData[3]), float(imuData[4]), float(imuData[5])] # imuData[3:6]
+
+        print("Accelerometer: [", accValue[0], ",", accValue[1], ",", accValue[2], "] \n")
+        print("Magnetometer: [", magValue[0], ",", magValue[1], ",", magValue[2], "] \n")
+        
+        # calculate our rotation matrix.
+        rotMatrix = CalculateRotationMatrix(magValue, accValue)
+
         if iResponse == 'a':
             print(ourLat, "º,", ourLon, "º,", ourHei, "m \n")
 
         if iResponse == 'd':
             print(dronLat, "º,", dronLon, "º,", dronHei, "m \n")
+
+        sleep(2)
 
 # stop position object
 dron.stop()

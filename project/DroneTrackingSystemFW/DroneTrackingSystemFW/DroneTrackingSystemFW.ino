@@ -19,6 +19,7 @@ bool f_serialNewLine = false; // whether the string is complete
 String inputString = ""; // a String to hold incoming data
 unsigned int outputPin1 = LED_BUILTIN;
 Servo miServo; // Creo objeto de la clase Servo.
+int servoOffset = 0; //Varaible for saving the servo offset after the homming
 
 //SERVO PINOUT
 #define SERVO_PIN 9
@@ -139,7 +140,7 @@ int exeCommand(SerialCommand inCommand)
     }
     float pos = inCommand.params[0].toFloat();
 
-    MovServoMotor(&miServo, pos, WAIT_TIME_SERVO);
+    MovServoMotor(&miServo, pos, WAIT_TIME_SERVO, servoOffset);
 
     //Returns the the servo has arrived
     Serial.println("S:OK");
@@ -187,13 +188,16 @@ int exeCommand(SerialCommand inCommand)
   else if (inCommand.command == 'H')
   {
     float pos = 180;
-    MovServoMotor(&miServo, pos, WAIT_TIME_SERVO);
+    MovServoMotor(&miServo, pos, WAIT_TIME_SERVO,0);
     delay(200);
-    while((digitalRead(interrupPin) == LOW )&& (pos > 0)){
-      //Serial.println(pos);
-      MovServoMotor(&miServo, pos, WAIT_TIME_SERVO);
+    
+    do{
+      MovServoMotor(&miServo, 0, WAIT_TIME_SERVO,pos);
       pos = pos - 10;
-    }
+    }while((digitalRead(interrupPin) == LOW )&& (pos > 0));
+
+    //Saves the current position as the 0 servo offset.
+    servoOffset = pos;
     
     //Returns the ACK
     Serial.println("H:OK");

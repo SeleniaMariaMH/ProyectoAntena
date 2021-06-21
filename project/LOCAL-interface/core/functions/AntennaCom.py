@@ -26,7 +26,6 @@ class AntennaInterface:
             "params" : []
         }
 
-        print(string)
         if (string != None)&(string!=""):
 
             decodeCom["id"] = string[0]
@@ -59,8 +58,6 @@ class AntennaInterface:
 
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='C'):
-                    print(inString)
-                    print(decodeCom)
                     self.serial.closePort()
 
                     return()
@@ -85,8 +82,6 @@ class AntennaInterface:
                 decodeCom= self.decodeCommand(inString)
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='G'):
-                    #print(inString)
-                    #print(decodeCom)
                     self.serial.closePort()
 
                     return(decodeCom["params"])
@@ -110,8 +105,6 @@ class AntennaInterface:
                 decodeCom= self.decodeCommand(inString)
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='S'):
-                    #print(inString)
-                    #print(decodeCom)
                     self.serial.closePort()
 
                     return(decodeCom["params"])
@@ -136,8 +129,6 @@ class AntennaInterface:
                 decodeCom= self.decodeCommand(inString)
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='M'):
-                    #print(inString)
-                    #print(decodeCom)
                     self.serial.closePort()
 
                     return(decodeCom["params"])
@@ -175,8 +166,6 @@ class AntennaInterface:
 
                 #Check if the incoming sentence is the one that we are waiting.
                 if(decodeCom["id"]=='H'):
-                    print(inString)
-                    print(decodeCom)
                     self.serial.closePort()
 
                     return()
