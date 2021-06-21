@@ -189,11 +189,14 @@ def CalculateNorm(vector):
 
 def createDronPositionList(list, ourLat, ourLon):
 
-    # DRON moves from 5m to 1m of altitude (inclination)
+    # DRON moves from 65m to 1m of altitude (inclination)
     list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 65})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 55})
     list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 45})
     list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 35})
-    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 20})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 25})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 15})
+    list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 5})
     list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 1})
 
     # DRON moves to the left (rotation)
@@ -202,18 +205,16 @@ def createDronPositionList(list, ourLat, ourLon):
     list.append({'Latitude': ourLat + 0.00005, 'Longitude': ourLon + 0.00026, 'Altitude': 1})
     list.append({'Latitude': ourLat + 0.00000, 'Longitude': ourLon + 0.00028, 'Altitude': 1})
     list.append({'Latitude': ourLat - 0.00015, 'Longitude': ourLon + 0.00030, 'Altitude': 1})
+    list.append({'Latitude': ourLat - 0.00030, 'Longitude': ourLon + 0.00032, 'Altitude': 1})
+    list.append({'Latitude': ourLat - 0.00045, 'Longitude': ourLon + 0.00034, 'Altitude': 1})
+    list.append({'Latitude': ourLat - 0.00055, 'Longitude': ourLon + 0.00036, 'Altitude': 1})
 
-
-    # # DRON moves from 5m to 1m of altitude (inclination)
-    # list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 5})
-    # list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 4})
-    # list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 3})
-    # list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 2})
-    # list.append({'Latitude': ourLat + 0.00020, 'Longitude': ourLon + 0.00020, 'Altitude': 1})
-
-    # # DRON moves to the left (rotation)
-    # list.append({'Latitude': ourLat + 0.00018, 'Longitude': ourLon + 0.00022, 'Altitude': 1})
-    # list.append({'Latitude': ourLat + 0.00016, 'Longitude': ourLon + 0.00024, 'Altitude': 1})
-    # list.append({'Latitude': ourLat + 0.00014, 'Longitude': ourLon + 0.00026, 'Altitude': 1})
-    # list.append({'Latitude': ourLat + 0.00012, 'Longitude': ourLon + 0.00028, 'Altitude': 1})
-    # list.append({'Latitude': ourLat + 0.00010, 'Longitude': ourLon + 0.00030, 'Altitude': 1})
+    # DRON moves to the right (rotation)
+    list.append({'Latitude': ourLat - 0.00055, 'Longitude': ourLon + 0.00036, 'Altitude': 1})
+    list.append({'Latitude': ourLat - 0.00045, 'Longitude': ourLon + 0.00034, 'Altitude': 5})
+    list.append({'Latitude': ourLat - 0.00030, 'Longitude': ourLon + 0.00032, 'Altitude': 15})
+    list.append({'Latitude': ourLat - 0.00015, 'Longitude': ourLon + 0.00030, 'Altitude': 25})
+    list.append({'Latitude': ourLat + 0.00000, 'Longitude': ourLon + 0.00028, 'Altitude': 35})
+    list.append({'Latitude': ourLat + 0.00005, 'Longitude': ourLon + 0.00026, 'Altitude': 45})
+    list.append({'Latitude': ourLat + 0.00010, 'Longitude': ourLon + 0.00024, 'Altitude': 55})
+    list.append({'Latitude': ourLat + 0.00015, 'Longitude': ourLon + 0.00022, 'Altitude': 65})
