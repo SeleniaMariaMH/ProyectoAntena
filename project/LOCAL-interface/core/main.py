@@ -114,7 +114,7 @@ while(True):
 
         # change vector position reference.
         posVectorRef = VectorToVector(posVector, rotMatrix)
-        print("Position vector: [", posVectorRef[0], ",", posVectorRef[1], ",", posVectorRef[2], "]")
+        # print("Position vector: [", posVectorRef[0], ",", posVectorRef[1], ",", posVectorRef[2], "]")
 
         # calculate rotation and inclination angles.
         (rotDeg, incDeg) = RotationAndInclination(posVectorRef)
