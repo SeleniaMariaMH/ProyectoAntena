@@ -162,7 +162,7 @@ class AntennaInterface:
         time.sleep(0.1)
         self.serial.closePort()
 
-    def calibrateImu(self,timeout):
+    def homming(self,timeout):
         self.serial.openPort()
         self.serial.writeSerial(b'H:0\n')
         
